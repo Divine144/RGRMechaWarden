@@ -42,7 +42,7 @@ public class SkillInit {
             Component.literal("Mecha Teen"),
             Component.literal("%s Hearts, Strength %s, Jump Boost %s".formatted(10, "I", "II")),
             Arrays.asList(
-                    new ItemSkillRequirement(() -> Items.BONE_BLOCK, 32),
+                    new ItemSkillRequirement(() -> Items.BONE_BLOCK, 3),
                     new EnchantedItemRequirement(p -> {
                         if (p.getItem() instanceof TieredItem item && item.getTier() == Tiers.GOLD) {
                             return p.isEnchanted();
@@ -61,7 +61,7 @@ public class SkillInit {
             Component.literal("Mecha Warden"),
             Component.literal("%s Hearts, Strength %s, Jump Boost %s, +%s Block Reach".formatted(20, "II", "IV", "2")),
             Arrays.asList(
-                    new ItemSkillRequirement(() -> Items.GOLDEN_APPLE, 9),
+                    new ItemSkillRequirement(() -> Items.GOLDEN_APPLE, 3),
                     new EnchantedItemRequirement(p -> {
                         if (p.getItem() instanceof TieredItem item && item.getTier() == Tiers.DIAMOND) {
                             return p.isEnchanted();
@@ -71,7 +71,7 @@ public class SkillInit {
                         }
                         return false;
                     }, "Enchanted Diamond Item"),
-                    new ItemSkillRequirementSpecial(() -> Items.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, 1, "[Wild Armor Trim Smithing Template]")
+                    new ItemTagSkillRequirement(() -> ItemTags.DECORATED_POT_SHERDS, 3, Component.literal("Any Pot Shards"))
             ),
             MorphInit.MECHA_WARDEN
     ));
@@ -81,7 +81,7 @@ public class SkillInit {
             Arrays.asList(
                     new ItemSkillRequirement(() -> Items.ENCHANTED_GOLDEN_APPLE, 1),
                     new ItemSkillRequirement(() -> Items.BELL, 2),
-                    new ItemSkillRequirementSpecial(() -> Items.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, 1, "[Vex Armor Trim Smithing Template]")
+                    new ItemSkillRequirement(() -> Items.TOTEM_OF_UNDYING, 1)
             ),
             MorphInit.MECHA_KING
     ));
@@ -175,9 +175,9 @@ public class SkillInit {
                     creative flight, but has a height limit and speed limit per Evolution.
                     """),
             Arrays.asList(
-                    new ItemSkillRequirement(() -> Items.SEAGRASS, 16),
-                    new ItemSkillRequirement(() -> Items.CHARCOAL, 16),
-                    new ItemSkillRequirement(() -> Items.WHITE_DYE, 16)
+                    new ItemSkillRequirement(() -> Items.SHIELD, 1),
+                    new ItemSkillRequirement(() -> Items.REPEATER, 2),
+                    new ItemSkillRequirement(() -> Items.POWERED_RAIL, 12)
             ),
             player -> {
                 unlockAbility(player, AbilityInit.CAMOUFLAGE.get());
@@ -195,9 +195,9 @@ public class SkillInit {
                     COOLDOWN: 5s
                     """),
             Arrays.asList(
-                    new ItemTagSkillRequirement(() -> ItemTags.DECORATED_POT_SHERDS, 1, Component.literal("Pottery Fragment")),
-                    new ItemSkillRequirement(() -> Items.BONE_BLOCK, 16),
-                    new ItemSkillRequirement(() -> Items.FIRE_CHARGE, 24)
+                    new ItemSkillRequirement(() -> Items.GLOW_BERRIES, 10),
+                    new ItemSkillRequirement(() -> Items.FERMENTED_SPIDER_EYE, 2),
+                    new ItemSkillRequirement(() -> Items.SCULK_VEIN, 12)
             ),
             player -> {
 //                player.getInventory().add(new ItemStack(ItemInit.LEAF_CUTTER_TOOLS.get()));
@@ -216,8 +216,9 @@ public class SkillInit {
                     """),
             Arrays.asList(
                   /*  new ItemTreasureMapSkillRequirement(1),*/
-                    new ItemTagSkillRequirement(() -> ItemTags.TRIM_TEMPLATES, 1, Component.literal("Trim Template")),
-                    new ItemSkillRequirement(() -> Items.GHAST_TEAR, 3)
+                    new ItemSkillRequirement(() -> Items.RECOVERY_COMPASS, 1),
+                    new ItemSkillRequirement(() -> Items.RESPAWN_ANCHOR, 1),
+                    new ItemSkillRequirement(() -> Items.TNT, 8)
             ),
             player -> {
 /*
@@ -232,7 +233,7 @@ public class SkillInit {
     public static final RegistryObject<Skill> MECHOLOCATION = SKILLS.register("mecholocation", () -> new SimpleSkill(
             Component.literal("Mecholocation"),
             Component.literal("""
-                    Once unlocked, the Mecha Warden can use this item “scan” the area in a 50 block radius.
+                    Once unlocked, the Mecha Warden can use this item to “scan” the area in a 50 block radius.
                     If no players are in that 50 block radius, the Mecholocator will show a "title" of the
                     nearest hunter that is x amount of blocks away in y direction. If one or more players is found,
                     it will instead highlight those players in red for the Mecha Warden until their next death.
@@ -240,13 +241,13 @@ public class SkillInit {
                     COOLDOWN: 10s
                     """),
             Arrays.asList(
+                    // TODO: Add upgraded map here
 /*
                     new ItemTagSkillRequirement(() -> TagInit.CORAL, 32, Component.literal("Coral")),
 */
-                    new ItemSkillRequirement(() -> Items.AXOLOTL_BUCKET, 3)
-/*
-                    new ItemTagSkillRequirement(() -> TagInit.HORSE_ARMOR, 3, Component.literal("Horse Armor"))
-*/
+                    new ItemSkillRequirement(() -> Items.DAYLIGHT_DETECTOR, 10),
+                    new ItemSkillRequirement(() -> Items.LODESTONE, 1)
+
             ),
             player -> {
                 unlockAbility(player, AbilityInit.SWARM_SHIELD.get());
@@ -266,9 +267,10 @@ public class SkillInit {
                     COOLDOWN: 15s
                     """),
             Arrays.asList(
-                    new ItemSkillRequirement(() -> Items.DRAGON_EGG, 1),
-                    new ItemSkillRequirement(() -> Items.WITHER_SKELETON_SKULL, 3),
-                    new ItemSkillRequirement(() -> Items.SHULKER_BOX, 3)
+                    new ItemSkillRequirement(() -> Items.HEART_OF_THE_SEA, 1),
+                    new ItemSkillRequirement(() -> Items.NAUTILUS_SHELL, 1),
+                    new ItemSkillRequirement(() -> Items.WITHER_SKELETON_SKULL, 1),
+                    new ItemSkillRequirement(() -> Items.DRAGON_EGG, 1)
             ),
             player -> {
                 unlockAbility(player, AbilityInit.GIGA_ANT.get());

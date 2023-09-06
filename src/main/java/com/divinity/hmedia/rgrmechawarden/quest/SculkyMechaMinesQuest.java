@@ -1,9 +1,14 @@
 package com.divinity.hmedia.rgrmechawarden.quest;
 
+import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersLaserGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.MineSpawnerNetherGoal;
+import dev._100media.hundredmediaquests.goal.HarvestBlocksGoal;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
 import dev._100media.hundredmediaquests.quest.Quest;
 import dev._100media.hundredmediaquests.quest.QuestType;
 import dev._100media.hundredmediaquests.reward.QuestReward;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +21,9 @@ public class SculkyMechaMinesQuest extends Quest {
     @Override
     protected List<QuestGoal> initializeGoals() {
         List<QuestGoal> goals = new ArrayList<>();
-/*        goals.add(new AquireAdvancementGoal("lightning_rod_with_villager_no_fire", "surge_protector_advancement_goal"));
-        goals.add(new KillEntityCritGoal(15, EntityType.CAVE_SPIDER) {
-            @Override
-            public String getDescriptionId() {
-                return "quest.goal.rgrant.kill_cave_spider_crit_goal";
-            }
-        });
-        goals.add(new KillPlayersMandiblesGoal(3));*/
+        goals.add(new AquireAdvancementGoal("cure_zombie_villager", "zombie_doctor_advancement_goal"));
+        goals.add(new MineSpawnerNetherGoal(2));
+        goals.add(new KillPlayersLaserGoal(4));
         return goals;
     }
 

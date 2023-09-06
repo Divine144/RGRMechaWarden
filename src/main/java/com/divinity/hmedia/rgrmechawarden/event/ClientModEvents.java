@@ -49,6 +49,7 @@ public class ClientModEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+
         // TODO : Change these
  /*       createSimpleMorphRenderer(MorphInit.BABY_ANT.get(), "baby_ant", new AntAnimatable(), 1.0f);
         createSimpleMorphRenderer(MorphInit.BLACK_ANT.get(), "black_ant", new AntAnimatable(), 1.0f);

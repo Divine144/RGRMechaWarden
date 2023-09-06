@@ -5,13 +5,20 @@ import dev._100media.capabilitysyncer.core.EntityCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class SkulkHolder extends EntityCapability {
     private int skulk;
     private int skulkCap;
     private int skulkRegen = 2;
+    private boolean isMechaMorphed = false;
+
+    private Block camouflagedBlock = Blocks.AIR;
 
     protected SkulkHolder(Entity entity) {
         super(entity);
@@ -37,6 +44,16 @@ public class SkulkHolder extends EntityCapability {
         if (this.skulk != old) updateTracking();
     }
 
+    public boolean removeSkulk(int skulk) {
+        int old = this.skulk;
+        if (this.skulk - skulk < 0) {
+            return false;
+        }
+        this.skulk -= skulk;
+        if (this.skulk != old) updateTracking();
+        return true;
+    }
+
     public int getBaseSkulkRegen() {
         return 2;
     }
@@ -59,11 +76,31 @@ public class SkulkHolder extends EntityCapability {
         updateTracking();
     }
 
+    public boolean isMechaMorphed() {
+        return isMechaMorphed;
+    }
+
+    public void setMechaMorphed(boolean mechaMorphed) {
+        isMechaMorphed = mechaMorphed;
+        updateTracking();
+    }
+
+    public Block getCamouflagedBlock() {
+        return camouflagedBlock;
+    }
+
+    public void setCamouflagedBlock(Block camouflagedBlock) {
+        this.camouflagedBlock = camouflagedBlock;
+        updateTracking();
+    }
+
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("skulk", this.skulk);
         tag.putInt("skulkRegen", this.skulkRegen);
+        tag.putBoolean("isMechaMorphed", this.isMechaMorphed);
+        tag.putInt("camouflagedBlock", Block.getId(this.camouflagedBlock.defaultBlockState()));
         return tag;
     }
 
@@ -71,6 +108,8 @@ public class SkulkHolder extends EntityCapability {
     public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
         this.skulk = nbt.getInt("skulk");
         this.skulkRegen = nbt.getInt("skulkRegen");
+        this.isMechaMorphed = nbt.getBoolean("isMechaMorphed");
+        this.camouflagedBlock = Block.stateById(nbt.getInt("camouflagedBlock")).getBlock();
     }
 
     @Override

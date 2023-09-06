@@ -36,6 +36,7 @@ public class RGRMechaWarden {
 
         ItemInit.ITEMS.register(modBus);
         EntityInit.ENTITIES.register(modBus);
+        EffectInit.EFFECTS.register(modBus);
         BlockInit.BLOCKS.register(modBus);
         SoundInit.SOUNDS.register(modBus);
         BlockInit.BLOCK_ENTITIES.register(modBus);

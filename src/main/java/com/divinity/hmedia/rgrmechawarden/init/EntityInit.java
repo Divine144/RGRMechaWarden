@@ -1,9 +1,12 @@
 package com.divinity.hmedia.rgrmechawarden.init;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.entity.LaserEntity;
+import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,6 +23,13 @@ import java.util.function.Supplier;
 public class EntityInit {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, RGRMechaWarden.MODID);
     private static final List<AttributesRegister<?>> attributeSuppliers = new ArrayList<>();
+
+    public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerEntity("missile", () ->
+            EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
+
+    public static final RegistryObject<EntityType<LaserEntity>> LASER = registerEntity("missile", () ->
+            EntityType.Builder.<LaserEntity>of(LaserEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
+
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String name, Supplier<EntityType.Builder<T>> supplier) {
         return ENTITIES.register(name, () -> supplier.get().build(RGRMechaWarden.MODID + ":" + name));

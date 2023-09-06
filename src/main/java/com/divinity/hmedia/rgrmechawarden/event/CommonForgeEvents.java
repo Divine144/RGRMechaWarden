@@ -3,6 +3,8 @@ package com.divinity.hmedia.rgrmechawarden.event;
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.TradeWithVillagerGoal;
+import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import com.mojang.brigadier.Command;
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import net.minecraft.commands.Commands;
@@ -10,6 +12,9 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerData;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -57,17 +62,21 @@ public class CommonForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onVillagerTrade(TradeWithVillagerEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            if (event.getAbstractVillager() instanceof Villager) {
+                MechaWardenUtils.addToGenericQuestGoal(player, TradeWithVillagerGoal.class);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerLeave(EntityLeaveLevelEvent event) {
 
     }
 
     @SubscribeEvent
     public static void onKill(LivingDeathEvent event) {
-
-    }
-
-    @SubscribeEvent
-    public static void onVillagerTrade(TradeWithVillagerEvent event) {
 
     }
 

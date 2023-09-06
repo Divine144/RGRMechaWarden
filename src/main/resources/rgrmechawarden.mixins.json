@@ -3,7 +3,11 @@
   "package": "com.divinity.hmedia.rgrmechawarden.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "${mod_id}.refmap.json",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "EntityMixin"
+  ],
+  "client": [
+    "MinecraftMixin"
+  ],
   "minVersion": "0.8.5"
 }

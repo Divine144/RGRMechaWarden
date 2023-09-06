@@ -1,6 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.init;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.ability.ShootLaserTurretAbility;
 import dev._100media.hundredmediaabilities.HundredMediaAbilitiesMod;
 import dev._100media.hundredmediaabilities.ability.Ability;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class AbilityInit {
 
     public static final DeferredRegister<Ability> ABILITIES = DeferredRegister.create(new ResourceLocation(HundredMediaAbilitiesMod.MODID, "abilities"), RGRMechaWarden.MODID);
+
+    public static final RegistryObject<Ability> LASER_TURRET_SHOOT = ABILITIES.register("laser_turret_shoot", ShootLaserTurretAbility::new);
 
     public static final RegistryObject<Ability> ANT_ARMY = ABILITIES.register("ant_army", Ability::new);
 

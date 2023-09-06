@@ -1,6 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.datagen;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -9,6 +10,9 @@ import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public ModItemModelProvider(PackOutput generator, ExistingFileHelper existingFileHelper) {
@@ -21,9 +25,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         //         .map(Supplier::get)
         //         .forEach(this::simpleHandHeldModel);
 
-//        Stream.of()
-//                .map(Supplier::get)
-//                .forEach(this::simpleGeneratedModel);
+        Stream.of(ItemInit.MOUNTED_WRIST_ROCKETS, ItemInit.MECHA_WARDEN_LASER)
+                .map(Supplier::get)
+                .forEach(this::simpleGeneratedModel);
 
         // Stream.of()
         //         .map(Supplier::get)

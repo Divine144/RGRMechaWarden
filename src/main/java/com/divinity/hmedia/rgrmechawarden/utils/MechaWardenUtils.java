@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class MechaSharkUtils {
+public class MechaWardenUtils {
 
     public static boolean hasItemEitherHands(Player player, Item item) {
         return player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == item || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == item;
@@ -98,6 +98,7 @@ public class MechaSharkUtils {
         double d0 = Double.MAX_VALUE;
         Entity entity = null;
         for (Entity entity1 : level.getEntities(origin, boundingBox, filter)) {
+            System.out.println(entity1);
             if (entity1.isSpectator()) {
                 continue;
             }
@@ -115,6 +116,29 @@ public class MechaSharkUtils {
             }
         }
         return entity == null ? null : new EntityHitResult(entity);
+    }
+
+    public static void rayTraceEntitiesWithAction(Level level, Entity origin, float range, Consumer<Entity> action, boolean shouldStopOnFirstHit) {
+        Vec3 look = origin.getViewVector(0);
+        Vec3 startVec = origin.getEyePosition(0);
+        Vec3 endVec = startVec.add(look.x * range, look.y * range, look.z * range);
+        AABB box = new AABB(startVec, endVec);
+        rayTraceEntitiesWithAction(level, origin, startVec, endVec, box, action, shouldStopOnFirstHit);
+    }
+
+    public static void rayTraceEntitiesWithAction(Level level, @Nullable Entity origin, Vec3 startVec, Vec3 endVec, AABB boundingBox, Consumer<Entity> action, boolean shouldStopOnFirstHit) {
+        for (Entity entity : level.getEntities(origin, boundingBox, p -> p instanceof LivingEntity)) {
+            if (entity.isSpectator()) {
+                continue;
+            }
+            AABB aabb = entity.getBoundingBox();
+            aabb = aabb.inflate(2);
+            Optional<Vec3> optional = aabb.clip(startVec, endVec);
+            if (optional.isPresent()) {
+                action.accept(entity);
+                if (shouldStopOnFirstHit) break;
+            }
+        }
     }
 
     public static BlockHitResult blockTrace(LivingEntity livingEntity, ClipContext.Fluid rayTraceFluid, int range, boolean downOrFace) {
