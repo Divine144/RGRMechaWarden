@@ -1,17 +1,17 @@
 package com.divinity.hmedia.rgrmechawarden.item;
 
-import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.entity.DeepDarkDestroyerEntity;
+import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 
-public class MechaMorphItem extends Item {
+public class DeepDarkDestroyerItem extends Item {
 
-    public MechaMorphItem(Properties pProperties) {
+    public DeepDarkDestroyerItem(Properties pProperties) {
         super(pProperties);
     }
 
@@ -21,17 +21,13 @@ public class MechaMorphItem extends Item {
         if (pLevel.isClientSide) {
             return InteractionResultHolder.consume(itemStack);
         }
-        var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(pPlayer);
-        if (holder != null) {
-            if (!holder.isMechaMorphed()) {
-                if (holder.removeSkulk(20)) {
-                    holder.setMechaMorphed(true);
-                    holder.setCamouflagedBlock(Blocks.AIR);
-                    pPlayer.getCooldowns().addCooldown(this, 20 * 5);
-                }
-            }
-            else holder.setMechaMorphed(false);
-        }
+        DeepDarkDestroyerEntity entity = new DeepDarkDestroyerEntity(EntityInit.DEEP_DARK_DESTROYER.get(), pLevel);
+        entity.setPos(pPlayer.getX(), pPlayer.getEyeY() - 0.55, pPlayer.getZ());
+        entity.setOwner(pPlayer);
+        entity.setNoGravity(true);
+        entity.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0, 1.5F, 0);
+        pPlayer.level().addFreshEntity(entity);
+        pPlayer.getCooldowns().addCooldown(this, 20 * 15);
         return InteractionResultHolder.consume(itemStack);
     }
 }

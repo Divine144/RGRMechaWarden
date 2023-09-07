@@ -14,11 +14,13 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class SkulkHolder extends EntityCapability {
     private int skulk;
-    private int skulkCap;
+    private int skulkCap = 1;
     private int skulkRegen = 2;
     private boolean isMechaMorphed = false;
 
     private Block camouflagedBlock = Blocks.AIR;
+
+    private boolean isMechaBoard = false;
 
     protected SkulkHolder(Entity entity) {
         super(entity);
@@ -94,6 +96,15 @@ public class SkulkHolder extends EntityCapability {
         updateTracking();
     }
 
+    public boolean isMechaBoard() {
+        return isMechaBoard;
+    }
+
+    public void setMechaBoard(boolean mechaBoard) {
+        isMechaBoard = mechaBoard;
+        updateTracking();
+    }
+
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
@@ -101,6 +112,7 @@ public class SkulkHolder extends EntityCapability {
         tag.putInt("skulkRegen", this.skulkRegen);
         tag.putBoolean("isMechaMorphed", this.isMechaMorphed);
         tag.putInt("camouflagedBlock", Block.getId(this.camouflagedBlock.defaultBlockState()));
+        tag.putBoolean("isMechaBoard", this.isMechaBoard);
         return tag;
     }
 
@@ -110,6 +122,7 @@ public class SkulkHolder extends EntityCapability {
         this.skulkRegen = nbt.getInt("skulkRegen");
         this.isMechaMorphed = nbt.getBoolean("isMechaMorphed");
         this.camouflagedBlock = Block.stateById(nbt.getInt("camouflagedBlock")).getBlock();
+        this.isMechaBoard = nbt.getBoolean("isMechaBoard");
     }
 
     @Override

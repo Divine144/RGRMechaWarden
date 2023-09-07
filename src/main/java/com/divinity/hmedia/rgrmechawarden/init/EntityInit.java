@@ -1,8 +1,10 @@
 package com.divinity.hmedia.rgrmechawarden.init;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.entity.DeepDarkDestroyerEntity;
 import com.divinity.hmedia.rgrmechawarden.entity.LaserEntity;
 import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
+import com.divinity.hmedia.rgrmechawarden.entity.NukeEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,9 +29,15 @@ public class EntityInit {
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerEntity("missile", () ->
             EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 
-    public static final RegistryObject<EntityType<LaserEntity>> LASER = registerEntity("missile", () ->
+    public static final RegistryObject<EntityType<LaserEntity>> LASER = registerEntity("laser", () ->
             EntityType.Builder.<LaserEntity>of(LaserEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 
+    public static final RegistryObject<EntityType<NukeEntity>> NUKE = registerEntity("nuke", () ->
+            EntityType.Builder.of(NukeEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F)
+                    .clientTrackingRange(10).updateInterval(10));
+
+    public static final RegistryObject<EntityType<DeepDarkDestroyerEntity>> DEEP_DARK_DESTROYER = registerEntity("deep_dark_destroyer", () ->
+            EntityType.Builder.of(DeepDarkDestroyerEntity::new, MobCategory.MISC).fireImmune().sized(1F, 1F));
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String name, Supplier<EntityType.Builder<T>> supplier) {
         return ENTITIES.register(name, () -> supplier.get().build(RGRMechaWarden.MODID + ":" + name));

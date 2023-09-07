@@ -1,7 +1,9 @@
 package com.divinity.hmedia.rgrmechawarden.quest;
 
+import com.divinity.hmedia.rgrmechawarden.init.AbilityInit;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.DamagePlayersMechaMorphGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.reward.AbilityQuestReward;
 import dev._100media.hundredmediaquests.goal.KillSpecificTypeGoal;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
 import dev._100media.hundredmediaquests.quest.Quest;
@@ -29,7 +31,7 @@ public class PortableTeslaCoilQuest extends Quest {
     @Override
     protected List<QuestReward> initializeRewards() {
         List<QuestReward> rewards = new ArrayList<>();
-        /*   rewards.add(new ItemQuestReward(new ItemStack(ItemInit.ACID_SPRAY.get())));*/
+        rewards.add(new AbilityQuestReward(AbilityInit.TESLA_COIL));
         return rewards;
     }
 }

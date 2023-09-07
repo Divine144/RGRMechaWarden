@@ -2,6 +2,7 @@ package com.divinity.hmedia.rgrmechawarden.utils;
 
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
@@ -98,7 +99,6 @@ public class MechaWardenUtils {
         double d0 = Double.MAX_VALUE;
         Entity entity = null;
         for (Entity entity1 : level.getEntities(origin, boundingBox, filter)) {
-            System.out.println(entity1);
             if (entity1.isSpectator()) {
                 continue;
             }
@@ -116,6 +116,47 @@ public class MechaWardenUtils {
             }
         }
         return entity == null ? null : new EntityHitResult(entity);
+    }
+
+    @Nullable
+    public static Direction getDirectionFromTwoPoints(Vec3 pFrom, Vec3 pTo) {
+        AABB instance = new AABB(pFrom, pTo).inflate(5);
+        double[] adouble = new double[]{1.0D};
+        double d0 = pTo.x - pFrom.x;
+        double d1 = pTo.y - pFrom.y;
+        double d2 = pTo.z - pFrom.z;
+        return getHoirzontalDirection(instance, pFrom, adouble, null, d0, d1, d2);
+    }
+
+    @Nullable
+    public static Direction getHoirzontalDirection(AABB pAabb, Vec3 pStart, double[] pMinDistance, @Nullable Direction pFacing, double pDeltaX, double pDeltaY, double pDeltaZ) {
+        if (pDeltaX > 1.0E-7D) {
+            pFacing = clipPoint(pMinDistance, pFacing, pDeltaX, pDeltaY, pDeltaZ, pAabb.minX, pAabb.minY, pAabb.maxY, pAabb.minZ, pAabb.maxZ, Direction.WEST, pStart.x, pStart.y, pStart.z);
+        }
+        else if (pDeltaX < -1.0E-7D) {
+            pFacing = clipPoint(pMinDistance, pFacing, pDeltaX, pDeltaY, pDeltaZ, pAabb.maxX, pAabb.minY, pAabb.maxY, pAabb.minZ, pAabb.maxZ, Direction.EAST, pStart.x, pStart.y, pStart.z);
+        }
+        if (pDeltaZ > 1.0E-7D) {
+            pFacing = clipPoint(pMinDistance, pFacing, pDeltaZ, pDeltaX, pDeltaY, pAabb.minZ, pAabb.minX, pAabb.maxX, pAabb.minY, pAabb.maxY, Direction.NORTH, pStart.z, pStart.x, pStart.y);
+        }
+        else if (pDeltaZ < -1.0E-7D) {
+            pFacing = clipPoint(pMinDistance, pFacing, pDeltaZ, pDeltaX, pDeltaY, pAabb.maxZ, pAabb.minX, pAabb.maxX, pAabb.minY, pAabb.maxY, Direction.SOUTH, pStart.z, pStart.x, pStart.y);
+        }
+        return pFacing;
+    }
+
+    @Nullable
+    private static Direction clipPoint(double[] pMinDistance, @Nullable Direction pPrevDirection, double pDistanceSide, double pDistanceOtherA, double pDistanceOtherB, double pMinSide, double pMinOtherA, double pMaxOtherA, double pMinOtherB, double pMaxOtherB, Direction pHitSide, double pStartSide, double pStartOtherA, double pStartOtherB) {
+        double d0 = (pMinSide - pStartSide) / pDistanceSide;
+        double d1 = pStartOtherA + d0 * pDistanceOtherA;
+        double d2 = pStartOtherB + d0 * pDistanceOtherB;
+        if (pMinOtherA - 1.0E-7D < d1 && d1 < pMaxOtherA + 1.0E-7D && pMinOtherB - 1.0E-7D < d2 && d2 < pMaxOtherB + 1.0E-7D) {
+            pMinDistance[0] = d0;
+            return pHitSide;
+        }
+        else {
+            return pPrevDirection;
+        }
     }
 
     public static void rayTraceEntitiesWithAction(Level level, Entity origin, float range, Consumer<Entity> action, boolean shouldStopOnFirstHit) {
@@ -170,7 +211,7 @@ public class MechaWardenUtils {
     /**
      * Returns a comparator which compares entities' distances to a given LivingEntity
      */
-    private static Comparator<Entity> getEntityComparator(LivingEntity other) {
+    public static Comparator<Entity> getEntityComparator(LivingEntity other) {
         return Comparator.comparing(entity -> entity.distanceToSqr(other.getX(), other.getY(), other.getZ()));
     }
 }

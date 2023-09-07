@@ -9,6 +9,7 @@ import com.divinity.hmedia.rgrmechawarden.skill.tree.EvolutionTree;
 import com.divinity.hmedia.rgrmechawarden.skill.tree.UtilityTree;
 import dev._100media.hundredmediaabilities.ability.Ability;
 import dev._100media.hundredmediaabilities.capability.AbilityHolderAttacher;
+import dev._100media.hundredmediaabilities.capability.MarkerHolderAttacher;
 import dev._100media.hundredmediaabilities.init.HMAAbilityInit;
 import dev._100media.hundredmediaquests.init.HMQSkillsInit;
 import dev._100media.hundredmediaquests.skill.Skill;
@@ -180,10 +181,10 @@ public class SkillInit {
                     new ItemSkillRequirement(() -> Items.POWERED_RAIL, 12)
             ),
             player -> {
-                unlockAbility(player, AbilityInit.CAMOUFLAGE.get());
+                MarkerHolderAttacher.getMarkerHolder(player).ifPresent(m -> m.addMarker(MarkerInit.MECHA_BOARD_MARKER.get(), true));
             },
             player -> {
-                removeAbility(player, AbilityInit.CAMOUFLAGE.get());
+                MarkerHolderAttacher.getMarkerHolder(player).ifPresent(m -> m.removeMarker(MarkerInit.MECHA_BOARD_MARKER.get(), true));
             }
     ));
     public static final RegistryObject<Skill> SCULKY_SNACK = SKILLS.register("sculky_snack", () -> new SimpleSkill(
@@ -200,7 +201,7 @@ public class SkillInit {
                     new ItemSkillRequirement(() -> Items.SCULK_VEIN, 12)
             ),
             player -> {
-//                player.getInventory().add(new ItemStack(ItemInit.LEAF_CUTTER_TOOLS.get()));
+                player.getInventory().add(new ItemStack(ItemInit.SCULKY_SNACK.get()));
             },
             player -> {
             }
@@ -221,12 +222,10 @@ public class SkillInit {
                     new ItemSkillRequirement(() -> Items.TNT, 8)
             ),
             player -> {
-/*
-                player.getInventory().add(new ItemStack(ItemInit.ECHO_LOCATION.get()));
-*/
+                unlockAbility(player, AbilityInit.FUSION_CORE_REACTOR.get());
             },
             player -> {
-
+                removeAbility(player, AbilityInit.FUSION_CORE_REACTOR.get());
             }
     ));
 
@@ -250,10 +249,9 @@ public class SkillInit {
 
             ),
             player -> {
-                unlockAbility(player, AbilityInit.SWARM_SHIELD.get());
+                player.getInventory().add(new ItemStack(ItemInit.MECHO_LOCATION.get()));
             },
             player -> {
-                removeAbility(player, AbilityInit.SWARM_SHIELD.get());
             }
     ));
     public static final RegistryObject<Skill> DEEP_DARK_DESTROYER = SKILLS.register("deep_dark_destroyer", () -> new SimpleSkill(
@@ -273,10 +271,9 @@ public class SkillInit {
                     new ItemSkillRequirement(() -> Items.DRAGON_EGG, 1)
             ),
             player -> {
-                unlockAbility(player, AbilityInit.GIGA_ANT.get());
+                player.getInventory().add(new ItemStack(ItemInit.DEEP_DARK_DESTROYER.get()));
             },
             player -> {
-                removeAbility(player, AbilityInit.GIGA_ANT.get());
             }
     ));
 

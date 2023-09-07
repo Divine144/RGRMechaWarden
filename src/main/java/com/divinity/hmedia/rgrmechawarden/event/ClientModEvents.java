@@ -1,6 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.event;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.init.MenuInit;
 import com.divinity.hmedia.rgrmechawarden.init.SkillInit;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -9,20 +10,24 @@ import com.mojang.datafixers.util.Pair;
 import dev._100media.hundredmediageckolib.client.animatable.IHasGeoRenderer;
 import dev._100media.hundredmediageckolib.client.model.SimpleGeoPlayerModel;
 import dev._100media.hundredmediageckolib.client.renderer.GeoPlayerRenderer;
+import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import dev._100media.hundredmediamorphs.client.renderer.MorphRenderers;
 import dev._100media.hundredmediamorphs.morph.Morph;
 import dev._100media.hundredmediaquests.client.screen.QuestSkillScreen;
 import dev._100media.hundredmediaquests.client.screen.SkillScreen;
 import dev._100media.hundredmediaquests.client.screen.TreeScreen;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -105,6 +110,7 @@ public class ClientModEvents {
 
     }
 
+    // TODO: Make mecha morph acutally morph into the turret if active
     private static <T extends IHasGeoRenderer & GeoAnimatable> void createSimpleMorphRenderer(Morph morph, String name, T animatable, float scale) {
         MorphRenderers.registerPlayerMorphRenderer(morph, context -> {
             var renderer = new GeoPlayerRenderer<>(context, new SimpleGeoPlayerModel<>(RGRMechaWarden.MODID, name) {
@@ -117,13 +123,22 @@ public class ClientModEvents {
                 @Override
                 public void render(AbstractClientPlayer player, T animatable1, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
                     if (!player.hasEffect(MobEffects.INVISIBILITY)) {
-                        poseStack.pushPose();
-                        if (player.getVehicle() != null) {
-                            poseStack.translate(0, 0, 0);
+                        var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                        if (holder != null) {
+                            poseStack.pushPose();
+                            if (holder.getCamouflagedBlock() != Blocks.AIR) {
+                                poseStack.translate(-0.5, 0, -0.5);
+                                Minecraft.getInstance().getBlockRenderer().renderSingleBlock(holder.getCamouflagedBlock().defaultBlockState(), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
+                            }
+                            else {
+                                if (player.getVehicle() != null) {
+                                    poseStack.translate(0, 0.10, 0);
+                                }
+                                poseStack.scale(scale, scale, scale);
+                                super.render(player, animatable1, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+                            }
+                            poseStack.popPose();
                         }
-                        poseStack.scale(scale, scale, scale);
-                        super.render(player, animatable1, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-                        poseStack.popPose();
                     }
                 }
             };
