@@ -112,8 +112,9 @@ public class CommonForgeEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.player instanceof ServerPlayer player && event.phase == TickEvent.Phase.END) {
             SkulkHolderAttacher.getSkulkHolder(player).ifPresent(cap -> {
-
-
+                if (cap.getNettedInvulnTicks() > 0) {
+                    cap.setNettedInvulnTicks(cap.getNettedInvulnTicks() - 1);
+                }
             });
         }
     }

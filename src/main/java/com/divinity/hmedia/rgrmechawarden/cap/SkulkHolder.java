@@ -16,11 +16,12 @@ public class SkulkHolder extends EntityCapability {
     private int skulk;
     private int skulkCap = 1;
     private int skulkRegen = 2;
+    private int nettedInvulnTicks = 0;
     private boolean isMechaMorphed = false;
-
     private Block camouflagedBlock = Blocks.AIR;
-
     private boolean isMechaBoard = false;
+    private boolean hasLost = false;
+    private boolean coolDownsReduced = false;
 
     protected SkulkHolder(Entity entity) {
         super(entity);
@@ -105,6 +106,34 @@ public class SkulkHolder extends EntityCapability {
         updateTracking();
     }
 
+    public int getNettedInvulnTicks() {
+        return nettedInvulnTicks;
+    }
+
+    public void setNettedInvulnTicks(int nettedInvulnTicks) {
+        int temp = this.nettedInvulnTicks;
+        this.nettedInvulnTicks = nettedInvulnTicks;
+        if (this.nettedInvulnTicks < 0) this.nettedInvulnTicks = 0;
+        if (temp != this.nettedInvulnTicks) updateTracking();
+    }
+
+    public boolean isHasLost() {
+        return hasLost;
+    }
+
+    public void setHasLost(boolean hasLost) {
+        this.hasLost = hasLost;
+    }
+
+    public boolean isCoolDownsReduced() {
+        return coolDownsReduced;
+    }
+
+    public void setCoolDownsReduced(boolean coolDownsReduced) {
+        this.coolDownsReduced = coolDownsReduced;
+        updateTracking();
+    }
+
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
@@ -113,6 +142,9 @@ public class SkulkHolder extends EntityCapability {
         tag.putBoolean("isMechaMorphed", this.isMechaMorphed);
         tag.putInt("camouflagedBlock", Block.getId(this.camouflagedBlock.defaultBlockState()));
         tag.putBoolean("isMechaBoard", this.isMechaBoard);
+        tag.putInt("nettedTicks", this.nettedInvulnTicks);
+        tag.putBoolean("hasLost", this.hasLost);
+        tag.putBoolean("reducedCooldown", this.coolDownsReduced);
         return tag;
     }
 
@@ -123,6 +155,9 @@ public class SkulkHolder extends EntityCapability {
         this.isMechaMorphed = nbt.getBoolean("isMechaMorphed");
         this.camouflagedBlock = Block.stateById(nbt.getInt("camouflagedBlock")).getBlock();
         this.isMechaBoard = nbt.getBoolean("isMechaBoard");
+        this.nettedInvulnTicks = nbt.getInt("nettedTicks");
+        this.hasLost = nbt.getBoolean("hasLost");
+        this.coolDownsReduced = nbt.getBoolean("reducedCooldown");
     }
 
     @Override

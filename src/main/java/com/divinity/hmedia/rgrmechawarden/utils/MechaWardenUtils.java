@@ -2,6 +2,7 @@ package com.divinity.hmedia.rgrmechawarden.utils;
 
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -26,6 +27,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MechaWardenUtils {
+
+    private static final float GRAVITY_STRENGTH = 0.075f;
 
     public static boolean hasItemEitherHands(Player player, Item item) {
         return player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == item || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == item;
@@ -87,6 +90,30 @@ public class MechaWardenUtils {
         });
     }
 
+    public static void pullEntityToPoint(LivingEntity livingEntity, Vec3 to) {
+        pullEntityToPoint(livingEntity, to, 1);
+    }
+
+    public static void pullEntityToPoint(LivingEntity livingEntity, Vec3 to, float strength) {
+        Vec3 pullDirection = to.subtract(livingEntity.position());
+        double gravity = interpolate(0, GRAVITY_STRENGTH, strength);
+        Vec3 pull = pullDirection.normalize().scale(gravity);
+        livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(pull));
+        livingEntity.hurtMarked = true;
+    }
+
+    public static void pullEntitiesToPoint(List<LivingEntity> list, Vec3 to) {
+        for (LivingEntity living : list) {
+            pullEntityToPoint(living, to);
+        }
+    }
+
+    public static void pullEntitiesToPoint(List<LivingEntity> list, Vec3 to, float strength) {
+        for (LivingEntity living : list) {
+            pullEntityToPoint(living, to, strength);
+        }
+    }
+
     public static EntityHitResult rayTraceEntities(Level level, Entity origin, float range, Predicate<Entity> filter) {
         Vec3 look = origin.getViewVector(0);
         Vec3 startVec = origin.getEyePosition(0);
@@ -116,6 +143,29 @@ public class MechaWardenUtils {
             }
         }
         return entity == null ? null : new EntityHitResult(entity);
+    }
+
+    public static float interpolate(float start, float end, float scale) {
+        return ((end - start) * scale) + start;
+    }
+
+    public static Direction findHorizontalDirection(BlockPos pos, Vec3 vector) {
+        Vec3 center = Vec3.atCenterOf(pos);
+        Vec3 direction = vector.subtract(center);
+        boolean eastWest = (Math.abs(direction.x()) > Math.abs(direction.z()));
+        if (eastWest) {
+            if (direction.x >= 0) {
+                return Direction.EAST;
+            } else {
+                return Direction.WEST;
+            }
+        } else {
+            if (direction.z >= 0) {
+                return Direction.SOUTH;
+            } else {
+                return Direction.NORTH;
+            }
+        }
     }
 
     @Nullable

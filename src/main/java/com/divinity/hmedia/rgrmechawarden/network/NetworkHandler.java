@@ -2,6 +2,7 @@ package com.divinity.hmedia.rgrmechawarden.network;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.network.serverbound.EscapeNetPacket;
 import com.google.common.collect.ImmutableList;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ public class NetworkHandler {
     public static void register() {
         List<BiConsumer<SimpleChannel, Integer>> packets = ImmutableList.<BiConsumer<SimpleChannel, Integer>>builder()
                 .add(SimpleEntityCapabilityStatusPacket::register)
+                .add(EscapeNetPacket::register)
                 .build();
 
         SimpleEntityCapabilityStatusPacket.registerRetriever(SkulkHolderAttacher.EXAMPLE_RL, SkulkHolderAttacher::getSkulkHolderUnwrap);

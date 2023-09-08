@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class HundredMediaBlock extends HorizontalDirectionalBlock {
 
-
     public HundredMediaBlock(Properties p_54120_) {
         super(p_54120_);
     }

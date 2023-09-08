@@ -1,5 +1,6 @@
 package com.divinity.hmedia.rgrmechawarden.entity;
 
+import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -75,7 +76,7 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
                             }
                             else {
                                 float magnitude = 1.5f - (float) ((pullDirection.length() - radius) / pullDistance);
-                                double gravity = interpolate(0, GRAVITY_STRENGTH, magnitude);
+                                double gravity = MechaWardenUtils.interpolate(0, GRAVITY_STRENGTH, magnitude);
                                 Vec3 pull = pullDirection.normalize().scale(gravity);
                                 entity.setDeltaMovement(entity.getDeltaMovement().add(pull));
                                 entity.hurtMarked = true;
@@ -172,9 +173,5 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
 
     public void setGrowTicks(int growTicks) {
         this.entityData.set(GROW_TICKS, growTicks);
-    }
-
-    private float interpolate(float start, float end, float scale) {
-        return ((end - start) * scale) + start;
     }
 }

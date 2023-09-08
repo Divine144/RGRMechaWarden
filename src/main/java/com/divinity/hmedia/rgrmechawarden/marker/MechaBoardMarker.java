@@ -16,6 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class MechaBoardMarker extends FlightMarker {
 
     private static final float DEFAULT_FLYING_SPEED = 0.05F;
+    private boolean hasTouchedGround = false;
 
     @Override
     public void onTick(Level level, Player player, int stackCount) {
@@ -26,12 +27,25 @@ public class MechaBoardMarker extends FlightMarker {
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
         if (player instanceof ServerPlayer serverPlayer) {
             if (serverPlayer.getAbilities().flying && !serverPlayer.isCreative() && !serverPlayer.isSpectator()) {
-                if (holder != null && !holder.isMechaBoard()) {
-                    holder.setMechaBoard(true);
+                if (holder != null ) {
+                    if (!holder.isMechaBoard()) {
+                        holder.setMechaBoard(true);
+                    }
                 }
             }
         }
         if (flyingSpeed != 0 && holder != null && holder.getSkulk() >= getSkulkCostForEvo(currentMorph)) {
+            if (!hasTouchedGround) {
+                if (holder.isCoolDownsReduced()) {
+                    hasTouchedGround = player.onGround() || player.isInWater();
+                    if (hasTouchedGround) holder.setCoolDownsReduced(false);
+                    else {
+                        this.disableFlight(level, player);
+                        return;
+                    }
+                }
+                else hasTouchedGround = false;
+            }
             BlockHitResult result = MechaWardenUtils.blockTrace(player,  ClipContext.Fluid.NONE, 100, true);
             if (result != null) {
                 float distanceAboveGround = Mth.abs((float) player.getY()) - Mth.abs((float) result.getLocation().y);

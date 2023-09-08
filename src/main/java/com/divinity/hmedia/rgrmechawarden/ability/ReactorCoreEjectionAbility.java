@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class ReactorCoreEjectionAbility extends Ability {
@@ -25,6 +26,20 @@ public class ReactorCoreEjectionAbility extends Ability {
             }
         });
     }
+
+/*    @Override
+    public int getRemainingCooldownDuration(Player player) {
+        int i = super.getRemainingCooldownDuration(player);
+        if (i == 0) {
+            var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+            if (holder != null) {
+                if (holder.isCoolDownsReduced()) {
+                    return 20 * 5;
+                }
+            }
+        }
+        return i;
+    }*/
 
     @Override
     public int getCooldownDuration() {

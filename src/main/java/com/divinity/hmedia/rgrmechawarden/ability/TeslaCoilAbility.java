@@ -3,10 +3,13 @@ package com.divinity.hmedia.rgrmechawarden.ability;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import dev._100media.hundredmediaabilities.ability.Ability;
-import dev._100media.hundredmediaabilities.capability.MarkerHolderAttacher;
+import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -25,7 +28,15 @@ public class TeslaCoilAbility extends Ability {
                     if (optional.isPresent()) {
                         LivingEntity entity = optional.get();
                         entity.hurt(level.damageSources().playerAttack(player), 2);
-                        // TODO: Code for lightning effect going from tip of the coil to targeted entity
+                        Vec3 origin = player.getEyePosition(1.0f);
+                        Vec3 traceVector = entity.position().subtract(origin);
+                        Vec3 direction = traceVector.normalize();
+
+                        // TODO: Maybe change this? idk looks good
+                        for (float i = 0.1f; i < Mth.floor(traceVector.length()) + 15; ++i) {
+                            Vec3 particlePosition = origin.add(direction.scale(i));
+                            player.serverLevel().sendParticles(new VibrationParticleOption(new BlockPositionSource(entity.blockPosition()), 30), particlePosition.x, particlePosition.y, particlePosition.z, 10, 0, 0, 0, 0);
+                        }
                     }
                     holder.removeSkulk(5);
                 }

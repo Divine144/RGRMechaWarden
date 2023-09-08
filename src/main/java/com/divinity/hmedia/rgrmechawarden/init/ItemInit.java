@@ -32,6 +32,10 @@ public class ItemInit {
 
     public static final RegistryObject<Item> DEEP_DARK_DESTROYER = ITEMS.register("deep_dark_destroyer", () -> new DeepDarkDestroyerItem(new Item.Properties().stacksTo(1)));
 
+    public static final RegistryObject<Item> MEGA_MAGNET = ITEMS.register("mega_magnet", () -> new MegaMagnetItem(new Item.Properties().stacksTo(1).durability(10)));
+
+    public static final RegistryObject<Item> DISRUPTOR_RAY = ITEMS.register("disruptor_ray", () -> new DisruptorRayItem(new Item.Properties().stacksTo(1).durability(10)));
+
     public static Item.Properties getItemProperties() {
         return new Item.Properties();
     }

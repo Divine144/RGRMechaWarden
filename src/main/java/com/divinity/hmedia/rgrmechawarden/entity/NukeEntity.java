@@ -51,10 +51,12 @@ public class NukeEntity extends PrimedTnt implements GeoEntity {
     @Override
     public void tick() {
         if (this.onGround()) {
-            setFuse(20 * 5);
+            if (getFuse() > 20 * 5) {
+                setFuse(20 * 5);
+            }
         }
         else {
-            setFuse(20);
+            setFuse(20 * 6);
         }
         super.tick();
     }
