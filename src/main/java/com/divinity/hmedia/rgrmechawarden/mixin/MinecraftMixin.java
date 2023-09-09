@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MinecraftMixin {
 
     @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
-    public void rgrmechawarden$shouldEntityAppearGlowing_HEAD(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
+    public void rgrmechawarden$injectShouldEntityAppearGlowing_HEAD(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
         if (pEntity instanceof LivingEntity living && living.hasEffect(EffectInit.LOCK_ON.get())) {
             cir.setReturnValue(true);
         }

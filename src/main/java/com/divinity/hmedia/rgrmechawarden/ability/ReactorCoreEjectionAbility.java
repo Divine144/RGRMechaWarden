@@ -3,9 +3,11 @@ package com.divinity.hmedia.rgrmechawarden.ability;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.entity.NukeEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import dev._100media.hundredmediaabilities.ability.Ability;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +25,7 @@ public class ReactorCoreEjectionAbility extends Ability {
                 nuke.setGoodOwner(player);
                 this.shootFromRotation(nuke, player, -65, player.getYRot(), 0.0F, 2.5F, 0F);
                 level.addFreshEntity(nuke);
+                level.playSound(null, player.blockPosition(), SoundInit.FUSION_REACTOR.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
             }
         });
     }

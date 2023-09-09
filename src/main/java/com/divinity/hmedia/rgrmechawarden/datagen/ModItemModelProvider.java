@@ -25,7 +25,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         //         .map(Supplier::get)
         //         .forEach(this::simpleHandHeldModel);
 
-        Stream.of(ItemInit.MOUNTED_WRIST_ROCKETS, ItemInit.MECHA_WARDEN_LASER, ItemInit.BLOCK_MORPH, ItemInit.MECHA_MORPH)
+        Stream.of(ItemInit.MOUNTED_WRIST_ROCKETS, ItemInit.MECHA_WARDEN_LASER, ItemInit.BLOCK_MORPH, ItemInit.MECHA_MORPH, ItemInit.SCULKY_SNACK, ItemInit.MECHO_LOCATION, ItemInit.DEEP_DARK_DESTROYER)
                 .map(Supplier::get)
                 .forEach(this::simpleGeneratedModel);
 

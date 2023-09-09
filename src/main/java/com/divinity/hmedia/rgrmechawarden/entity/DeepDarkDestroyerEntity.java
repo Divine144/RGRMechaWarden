@@ -39,7 +39,7 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
         super(pEntityType, pLevel);
     }
 
-    // getDimensions
+    // TODO: potentially implement getDimensions so it constantly expands
 
     @Override
     public void tick() {
@@ -97,8 +97,8 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
                                             level().setBlockAndUpdate(mutableBlockPos, Blocks.AIR.defaultBlockState());
                                             continue;
                                         }
-                                        if (level().random.nextFloat() > 0.5f) continue; //stagger the effect on normal blocks to make it look more organic
-                                        if (level().random.nextFloat() > 0.5f) { //delete half of blocks to reduce lag from falling block entities
+                                        if (level().random.nextFloat() > 0.7f) continue; //stagger the effect on normal blocks to make it look more organic
+                                        if (level().random.nextFloat() > 0.2f) { //delete half of blocks to reduce lag from falling block entities
                                             level().setBlockAndUpdate(mutableBlockPos, Blocks.AIR.defaultBlockState());
                                             continue;
                                         }
@@ -106,7 +106,8 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
                                         block.setNoGravity(true);
                                         block.noPhysics = true;
                                         block.dropItem = false;
-                                        block.setDeltaMovement(position().subtract(block.position()).normalize().scale(0.5f));
+                                        double gravity = MechaWardenUtils.interpolate(0, GRAVITY_STRENGTH, 1f);
+                                        block.setDeltaMovement(position().subtract(block.position()).normalize().scale(gravity));
                                     }
                                 }
                             }
@@ -115,7 +116,7 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
 
                     if (getGrowTicks() == STOP_GROWING_TICK) {
                         //clean up any noGravity on falling blocks that may have survived
-                        double broomSize = (radius + radius + MIN_REACH + MIN_REACH) * REACH_MODIFIER;
+                        double broomSize = (radius + radius + MIN_REACH + MIN_REACH) * REACH_MODIFIER * 5;
                         for (FallingBlockEntity entity : level().getEntitiesOfClass(FallingBlockEntity.class, AABB.ofSize(position(), broomSize, broomSize, broomSize))) {
                             entity.setNoGravity(false);
                         }

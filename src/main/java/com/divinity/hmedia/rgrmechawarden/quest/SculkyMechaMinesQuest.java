@@ -1,8 +1,10 @@
 package com.divinity.hmedia.rgrmechawarden.quest;
 
+import com.divinity.hmedia.rgrmechawarden.init.AbilityInit;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersLaserGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.MineSpawnerNetherGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.reward.AbilityQuestReward;
 import dev._100media.hundredmediaquests.goal.HarvestBlocksGoal;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
 import dev._100media.hundredmediaquests.quest.Quest;
@@ -30,7 +32,7 @@ public class SculkyMechaMinesQuest extends Quest {
     @Override
     protected List<QuestReward> initializeRewards() {
         List<QuestReward> rewards = new ArrayList<>();
-        /*   rewards.add(new ItemQuestReward(new ItemStack(ItemInit.ACID_SPRAY.get())));*/
+        rewards.add(new AbilityQuestReward(AbilityInit.SCULKY_MECHA_MINES));
         return rewards;
     }
 }

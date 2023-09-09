@@ -3,6 +3,7 @@ package com.divinity.hmedia.rgrmechawarden.init;
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.requirement.EnchantedItemRequirement;
 import com.divinity.hmedia.rgrmechawarden.requirement.ItemSkillRequirementSpecial;
+import com.divinity.hmedia.rgrmechawarden.requirement.ItemTreasureMapSkillRequirement;
 import com.divinity.hmedia.rgrmechawarden.skill.MorphSkill;
 import com.divinity.hmedia.rgrmechawarden.skill.tree.CombatTree;
 import com.divinity.hmedia.rgrmechawarden.skill.tree.EvolutionTree;
@@ -126,7 +127,7 @@ public class SkillInit {
                     When you right-click with this ability, a wide beam of energy is fired forward similar
                     to the normal Warden Laser, but continuous. This beam damages any enemies in its path continuously.
                     SCULK: 12/s
-                    COOLDOWN: 10s           
+                    COOLDOWN: 10s
                     """),
             QuestInit.MECHA_WARDEN_LASER
     ));
@@ -240,13 +241,9 @@ public class SkillInit {
                     COOLDOWN: 10s
                     """),
             Arrays.asList(
-                    // TODO: Add upgraded map here
-/*
-                    new ItemTagSkillRequirement(() -> TagInit.CORAL, 32, Component.literal("Coral")),
-*/
+                    new ItemTreasureMapSkillRequirement(1),
                     new ItemSkillRequirement(() -> Items.DAYLIGHT_DETECTOR, 10),
                     new ItemSkillRequirement(() -> Items.LODESTONE, 1)
-
             ),
             player -> {
                 player.getInventory().add(new ItemStack(ItemInit.MECHO_LOCATION.get()));

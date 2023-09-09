@@ -1,5 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.entity;
 
+import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersWristRocketsGoal;
+import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -8,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -15,14 +18,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class MissileEntity extends Entity implements GeoEntity {
-
     private static final EntityDataAccessor<Integer> DATA_TARGET = SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.INT);
     private final AnimatableInstanceCache instanceCache = GeckoLibUtil.createInstanceCache(this);
+    private static final RawAnimation FLY = RawAnimation.begin().thenLoop("fly");
     private LivingEntity target;
     private LivingEntity owner;
     private boolean antiAir = false;
@@ -42,6 +48,11 @@ public class MissileEntity extends Entity implements GeoEntity {
 
         if (!level().isClientSide && (target.distanceToSqr(this) <= 2 * 2 || (antiAir && !level().getBlockState(blockPosition()).isAir()))) {
             level().explode(owner, getX(), getY(), getZ(), 2, Level.ExplosionInteraction.NONE);
+            if (target.isDeadOrDying()) {
+                if (owner instanceof ServerPlayer player) {
+                    MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersWristRocketsGoal.class);
+                }
+            }
             discard();
             return;
         }
@@ -59,7 +70,7 @@ public class MissileEntity extends Entity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
+        controllerRegistrar.add(new AnimationController<>(this, "controller", 0, event -> event.setAndContinue(FLY)));
     }
 
     @Override

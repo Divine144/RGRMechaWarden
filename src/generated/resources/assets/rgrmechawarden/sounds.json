@@ -1,0 +1,42 @@
+{
+  "deep_dark_destroyer": {
+    "sounds": [
+      "rgrmechawarden:deep_dark_destroyer"
+    ]
+  },
+  "fusion_reactor": {
+    "sounds": [
+      "rgrmechawarden:fusion_reactor"
+    ]
+  },
+  "mecha_mines": {
+    "sounds": [
+      "rgrmechawarden:mecha_mines"
+    ]
+  },
+  "mecholocation": {
+    "sounds": [
+      "rgrmechawarden:mecholocation"
+    ]
+  },
+  "shock_trap": {
+    "sounds": [
+      "rgrmechawarden:shock_trap"
+    ]
+  },
+  "tesla_coil": {
+    "sounds": [
+      "rgrmechawarden:tesla_coil"
+    ]
+  },
+  "warden_laser": {
+    "sounds": [
+      "rgrmechawarden:warden_laser"
+    ]
+  },
+  "wrist_rockets": {
+    "sounds": [
+      "rgrmechawarden:wrist_rockets"
+    ]
+  }
+}

@@ -2,6 +2,7 @@ package com.divinity.hmedia.rgrmechawarden.item;
 
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.init.EffectInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -9,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -35,6 +37,7 @@ public class MechoLocationItem extends Item {
         }
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(pPlayer);
         if (holder != null && holder.removeSkulk(20)) {
+            pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.MECHO_LOCATION.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
             var list = MechaWardenUtils.getEntitiesInRange(pPlayer, Player.class, 35, 25, 35, p -> p != pPlayer);
             if (!list.isEmpty()) {
                 ((ServerPlayer) pPlayer).connection.send(new ClientboundSetTitleTextPacket(Component.literal("There are hunters nearby").withStyle(ChatFormatting.RED)));

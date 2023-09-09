@@ -1,6 +1,9 @@
 package com.divinity.hmedia.rgrmechawarden.entity;
 
+import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.init.AbilityInit;
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
+import dev._100media.hundredmediaabilities.capability.AbilityHolderAttacher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -116,6 +119,8 @@ public class EmpOrbEntity extends Projectile implements GeoEntity {
                 player.getCooldowns().addCooldown(ItemInit.MECHO_LOCATION.get(), 20 * 5);
                 player.getCooldowns().addCooldown(ItemInit.MOUNTED_WRIST_ROCKETS.get(), 20 * 5);
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 5, 1));
+                AbilityHolderAttacher.getAbilityHolder(player).ifPresent(p -> p.addCooldown(AbilityInit.SCULKY_MECHA_MINES.get(), true));
+                SkulkHolderAttacher.getSkulkHolder(player).ifPresent(p -> p.setCoolDownsReduced(true));
             }
             target.hurt(this.level().damageSources().indirectMagic(this, this.getOwner()), 1F);
             this.discard();

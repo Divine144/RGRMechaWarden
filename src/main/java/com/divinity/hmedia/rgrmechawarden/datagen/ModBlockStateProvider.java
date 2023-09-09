@@ -26,7 +26,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         //         .map(Supplier::get)
         //         .forEach(this::simpleCubeBottomTopBlockState);
         //
-         Stream.of(BlockInit.SHOCK_TRAP_BLOCK, BlockInit.CHARGING_STATION_BLOCK)
+         Stream.of(BlockInit.SHOCK_TRAP_BLOCK, BlockInit.CHARGING_STATION_BLOCK, BlockInit.MECHA_MINE_BLOCK)
                  .map(Supplier::get)
                  .forEach(this::simpleBlock);
 

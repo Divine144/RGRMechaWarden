@@ -4,10 +4,12 @@ import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EffectInit;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -88,6 +90,7 @@ public class MountedWristRocketsItem extends Item {
                                 missile.setOwner(pPlayer);
                                 missile.setTarget(entity);
                                 pLevel.addFreshEntity(missile);
+                                pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.WRIST_ROCKETS.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
                             }
                         }
                         entity.removeEffect(EffectInit.LOCK_ON.get());

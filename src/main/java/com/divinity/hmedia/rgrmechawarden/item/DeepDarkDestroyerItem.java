@@ -2,6 +2,8 @@ package com.divinity.hmedia.rgrmechawarden.item;
 
 import com.divinity.hmedia.rgrmechawarden.entity.DeepDarkDestroyerEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +30,7 @@ public class DeepDarkDestroyerItem extends Item {
         entity.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0, 1.5F, 0);
         pPlayer.level().addFreshEntity(entity);
         pPlayer.getCooldowns().addCooldown(this, 20 * 15);
+        pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.DEEP_DARK_DESTROYER.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
         return InteractionResultHolder.consume(itemStack);
     }
 }

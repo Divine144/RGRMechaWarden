@@ -1,6 +1,9 @@
 package com.divinity.hmedia.rgrmechawarden.item;
 
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +33,10 @@ public class MechaMorphItem extends Item {
                     pPlayer.getCooldowns().addCooldown(this, 20 * 5);
                 }
             }
-            else holder.setMechaMorphed(false);
+            else {
+                ((ServerPlayer) pPlayer).sendSystemMessage(Component.literal("Reset Morph").withStyle(ChatFormatting.GREEN), true);
+                holder.setMechaMorphed(false);
+            }
         }
         return InteractionResultHolder.consume(itemStack);
     }

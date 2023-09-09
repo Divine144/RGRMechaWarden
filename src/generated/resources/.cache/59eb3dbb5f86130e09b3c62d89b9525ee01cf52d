@@ -1,2 +1,5 @@
-// 1.20.1	2023-09-01T18:30:21.2719706	Loot Tables
+// 1.20.1	2023-09-08T16:09:16.5353514	Loot Tables
+9a0becedc43092e8a0e108801f0450008f1521bb data/rgrmechawarden/loot_tables/blocks/charging_station.json
 6d347c422fc7258554b200d2b75a6582ea623373 data/rgrmechawarden/loot_tables/blocks/hundred_media.json
+401431e2529e9e73ca2257952ac1238a53ccd084 data/rgrmechawarden/loot_tables/blocks/sculky_mecha_mines.json
+54bab52ab440f227494b52849abfe19aa89d03fc data/rgrmechawarden/loot_tables/blocks/shock_trap.json

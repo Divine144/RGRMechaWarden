@@ -34,7 +34,7 @@ public class BlockMorphItem extends Item {
                     Block block = Block.stateById(tag.getInt("block")).getBlock();
                     if (block != Blocks.AIR) {
                         holder.setCamouflagedBlock(block);
-                        ((ServerPlayer) pPlayer).sendSystemMessage(Component.literal("Selected Block: ").append(block.getName()).withStyle(ChatFormatting.GREEN), true);
+                        ((ServerPlayer) pPlayer).sendSystemMessage(Component.literal("Transformed Into ").append(block.getName()).withStyle(ChatFormatting.GREEN), true);
                     }
                     else {
                         ((ServerPlayer) pPlayer).sendSystemMessage(Component.literal("Invalid Block Selected").withStyle(ChatFormatting.RED), true);

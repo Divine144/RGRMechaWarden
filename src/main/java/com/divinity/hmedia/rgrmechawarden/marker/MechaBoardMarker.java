@@ -46,35 +46,38 @@ public class MechaBoardMarker extends FlightMarker {
                 }
                 else hasTouchedGround = false;
             }
-            BlockHitResult result = MechaWardenUtils.blockTrace(player,  ClipContext.Fluid.NONE, 100, true);
-            if (result != null) {
-                float distanceAboveGround = Mth.abs((float) player.getY()) - Mth.abs((float) result.getLocation().y);
-                if (currentMorph == MorphInit.BABY_MECHA.get()) {
-                    if (distanceAboveGround >= 3) {
-                        this.disableFlight(level, player);
-                        return;
+            if (player.getAbilities().flying) {
+                BlockHitResult result = MechaWardenUtils.blockTrace(player, ClipContext.Fluid.NONE, 100, true);
+                if (result != null) {
+                    float distanceAboveGround = Mth.abs((float) player.getY() - (float) result.getLocation().y);
+                    System.out.println(distanceAboveGround);
+                    if (currentMorph == MorphInit.BABY_MECHA.get()) {
+                        if (distanceAboveGround >= 3) {
+                            this.disableFlight(level, player);
+                            return;
+                        }
+                    }
+                    else if (currentMorph == MorphInit.MECHA_TEEN.get()) {
+                        if (distanceAboveGround >= 5) {
+                            this.disableFlight(level, player);
+                            return;
+                        }
+                    }
+                    else if (currentMorph == MorphInit.MECHA_WARDEN.get()) {
+                        if (distanceAboveGround >= 7) {
+                            this.disableFlight(level, player);
+                            return;
+                        }
                     }
                 }
-                else if (currentMorph == MorphInit.MECHA_TEEN.get()) {
-                    if (distanceAboveGround >= 5) {
-                        this.disableFlight(level, player);
-                        return;
+                if (player.tickCount % 20 == 0) {
+                    if (!player.level().isClientSide) {
+                        holder.removeSkulk(getSkulkCostForEvo(currentMorph));
                     }
                 }
-                else if (currentMorph == MorphInit.MECHA_WARDEN.get()) {
-                    if (distanceAboveGround >= 7) {
-                        this.disableFlight(level, player);
-                        return;
-                    }
+                if (player.getAbilities().getFlyingSpeed() != flyingSpeed) {
+                    player.getAbilities().setFlyingSpeed(flyingSpeed);
                 }
-            }
-            if (player.tickCount % 20 == 0) {
-                if (!player.level().isClientSide) {
-                    holder.removeSkulk(getSkulkCostForEvo(currentMorph));
-                }
-            }
-            if (player.getAbilities().getFlyingSpeed() != flyingSpeed) {
-                player.getAbilities().setFlyingSpeed(flyingSpeed);
             }
         }
         else this.disableFlight(level, player);

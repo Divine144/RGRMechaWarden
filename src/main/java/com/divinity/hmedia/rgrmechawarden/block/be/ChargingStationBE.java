@@ -1,6 +1,8 @@
 package com.divinity.hmedia.rgrmechawarden.block.be;
 
 import com.divinity.hmedia.rgrmechawarden.init.BlockInit;
+import com.divinity.hmedia.rgrmechawarden.network.NetworkHandler;
+import com.divinity.hmedia.rgrmechawarden.network.clientbound.UpdateChargingStationPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -10,17 +12,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ChargingStationBE extends BlockEntity implements GeoBlockEntity {
 
     private final AnimatableInstanceCache instanceCache = GeckoLibUtil.createInstanceCache(this);
+    private static final RawAnimation WITH_MAGNET_CHARGED = RawAnimation.begin().thenLoop("with_magnet_charged");
+    private static final RawAnimation WITH_MAGNET_NOT_CHARGED = RawAnimation.begin().thenLoop("with_magnet_empty");
+    private static final RawAnimation NO_MAGNET = RawAnimation.begin().thenLoop("no_magnet");
     private ItemStack storedStack = ItemStack.EMPTY;
+
+    // Client flags
+    private boolean isEmpty = true;
+    private boolean isCharged = false;
 
     public ChargingStationBE(BlockPos pPos, BlockState pBlockState) {
         super(BlockInit.CHARGING_STATION_BLOCK_ENTITY.get(), pPos, pBlockState);
@@ -73,7 +88,20 @@ public class ChargingStationBE extends BlockEntity implements GeoBlockEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
+        controllerRegistrar.add(new AnimationController<>(this, "controller", 0, event -> {
+            if (event.getData(DataTickets.BLOCK_ENTITY) instanceof ChargingStationBE stationBE) {
+                if (stationBE.isEmpty()) {
+                    return event.setAndContinue(NO_MAGNET);
+                }
+                else {
+                    if (stationBE.isCharged()) {
+                        event.setAndContinue(WITH_MAGNET_CHARGED);
+                    }
+                    else event.setAndContinue(WITH_MAGNET_NOT_CHARGED);
+                }
+            }
+            return PlayState.CONTINUE;
+        }));
     }
 
     @Override
@@ -93,7 +121,32 @@ public class ChargingStationBE extends BlockEntity implements GeoBlockEntity {
         if (!this.storedStack.isEmpty()) {
             if (storedStack.isDamaged()) {
                 storedStack.setDamageValue(storedStack.getDamageValue() - 1);
+                if (!storedStack.isDamaged()) {
+                    if (level != null && !level.isClientSide) {
+                        setCharged(true);
+                        NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new UpdateChargingStationPacket(this.worldPosition, isEmpty, isCharged));
+                    }
+                }
             }
         }
+    }
+    public boolean hasFinishedCharging() {
+        return !storedStack.isEmpty() && !storedStack.isDamaged();
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
+    public void setEmpty(boolean empty) {
+        isEmpty = empty;
+    }
+
+    public boolean isCharged() {
+        return isCharged;
+    }
+
+    public void setCharged(boolean charged) {
+        isCharged = charged;
     }
 }

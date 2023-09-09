@@ -1,6 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.datagen;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -15,7 +16,7 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 
     @Override
     public void registerSounds() {
-//        SoundInit.SOUNDS.getEntries().forEach(this::addSound);
+        SoundInit.SOUNDS.getEntries().forEach(this::addSound);
     }
 
     public void addSound(RegistryObject<SoundEvent> entry) {

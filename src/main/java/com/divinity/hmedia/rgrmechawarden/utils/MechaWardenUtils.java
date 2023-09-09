@@ -1,5 +1,6 @@
 package com.divinity.hmedia.rgrmechawarden.utils;
 
+import com.google.common.collect.Sets;
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
 import net.minecraft.core.BlockPos;
@@ -14,14 +15,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.*;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -88,6 +89,54 @@ public class MechaWardenUtils {
             }
             return false;
         });
+    }
+
+    public static void fancyExplosion(Vec3 center, Level level, int radius, BlockState afterMathState) {
+        Set<BlockPos> set = Sets.newHashSet();
+        ExplosionDamageCalculator damageCalculator = new ExplosionDamageCalculator();
+        for(int j = 0; j < 20; ++j) {
+            for(int k = 0; k < 20; ++k) {
+                for(int l = 0; l < 20; ++l) {
+                    if (j == 0 || j == 15 || k == 0 || k == 15 || l == 0 || l == 15) {
+                        double d0 = (float)j / 15.0F * 2.0F - 1.0F;
+                        double d1 = (float)k / 15.0F * 2.0F - 1.0F;
+                        double d2 = (float)l / 15.0F * 2.0F - 1.0F;
+                        double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                        d0 /= d3;
+                        d1 /= d3;
+                        d2 /= d3;
+                        float f = radius * (0.7F + level.random.nextFloat() * 0.6F);
+                        double d4 = center.x;
+                        double d6 = center.y;
+                        double d8 = center.z;
+                        for(; f > 0.0F; f -= 0.22500001F) {
+                            BlockPos blockpos = new BlockPos((int) d4, (int) d6, (int) d8);
+                            BlockState blockstate = level.getBlockState(blockpos);
+                            FluidState fluidstate = level.getFluidState(blockpos);
+                            if (!level.isInWorldBounds(blockpos)) {
+                                break;
+                            }
+                            Optional<Float> optional = damageCalculator.getBlockExplosionResistance(null, level, blockpos, blockstate, fluidstate);
+                            if (optional.isPresent()) {
+                                f -= (optional.get() + 0.3F) * 0.3F;
+                            }
+                            if (f > 0.0F && damageCalculator.shouldBlockExplode(null, level, blockpos, blockstate, f)) {
+                                set.add(blockpos);
+                            }
+                            d4 += d0 * (double)0.3F;
+                            d6 += d1 * (double)0.3F;
+                            d8 += d2 * (double)0.3F;
+                        }
+                    }
+                }
+            }
+        }
+        for (BlockPos pos : set) {
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir())
+                continue;
+            level.setBlockAndUpdate(pos, afterMathState);
+        }
     }
 
     public static void pullEntityToPoint(LivingEntity livingEntity, Vec3 to) {
@@ -218,7 +267,7 @@ public class MechaWardenUtils {
     }
 
     public static void rayTraceEntitiesWithAction(Level level, @Nullable Entity origin, Vec3 startVec, Vec3 endVec, AABB boundingBox, Consumer<Entity> action, boolean shouldStopOnFirstHit) {
-        for (Entity entity : level.getEntities(origin, boundingBox, p -> p instanceof LivingEntity)) {
+        for (Entity entity : level.getEntities(origin, boundingBox, p -> p instanceof LivingEntity && p != origin)) {
             if (entity.isSpectator()) {
                 continue;
             }

@@ -2,8 +2,12 @@ package com.divinity.hmedia.rgrmechawarden.event;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.init.BlockInit;
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
+import com.divinity.hmedia.rgrmechawarden.init.MorphInit;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.DolphinGraceEffectGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.MineSpawnerNetherGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.TradeWithVillagerGoal;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import com.mojang.brigadier.Command;
@@ -17,25 +21,27 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.IceBlock;
+import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.entity.living.AnimalTameEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.TradeWithVillagerEvent;
+import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.*;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -69,6 +75,17 @@ public class CommonForgeEvents {
                         )
                 )
         );
+    }
+
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer player) {
+            if (event.getState().getBlock() instanceof SpawnerBlock) {
+                if (player.serverLevel().dimension() == Level.NETHER) {
+                    MechaWardenUtils.addToGenericQuestGoal(player, MineSpawnerNetherGoal.class);
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -115,7 +132,19 @@ public class CommonForgeEvents {
                 if (cap.getNettedInvulnTicks() > 0) {
                     cap.setNettedInvulnTicks(cap.getNettedInvulnTicks() - 1);
                 }
+                if (player.tickCount % 20 == 0) {
+                    cap.setSkulk(cap.getSkulk() + cap.getSkulkRegen());
+                }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCrit(CriticalHitEvent event) {
+        if (event.getTarget() instanceof ServerPlayer player) {
+            if (player.getFeetBlockState().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
+                event.setResult(Event.Result.ALLOW);
+            }
         }
     }
 
@@ -129,6 +158,16 @@ public class CommonForgeEvents {
         if (event.isCanceled()) return;
         if (event.getTarget() instanceof LivingEntity living) {
 
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectGain(MobEffectEvent.Added event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            MobEffectInstance instance = event.getEffectInstance();
+            if (instance != null && instance.getEffect() == MobEffects.DOLPHINS_GRACE) {
+                MechaWardenUtils.addToGenericQuestGoal(serverPlayer, DolphinGraceEffectGoal.class);
+            }
         }
     }
 

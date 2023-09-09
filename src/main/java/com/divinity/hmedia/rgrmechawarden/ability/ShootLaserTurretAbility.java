@@ -23,7 +23,7 @@ public class ShootLaserTurretAbility extends Ability {
                     var pair = this.getDamageOutputPair(MorphHolderAttacher.getCurrentMorphUnwrap(player));
                     for (int i = 0; i < pair.getRight(); i++) {
                         LaserEntity entity = new LaserEntity(EntityInit.LASER.get(), level, pair.getLeft());
-                        entity.setPos(player.getX(), player.getEyeY() - 0.55, player.getZ());
+                        entity.setPos(player.getX(), player.getEyeY() - 0.15, player.getZ());
                         entity.setOwner(player);
                         entity.setNoGravity(true);
                         entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
@@ -37,6 +37,11 @@ public class ShootLaserTurretAbility extends Ability {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isHiddenAbility() {
+        return true;
     }
 
     @Override

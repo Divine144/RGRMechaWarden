@@ -3,6 +3,7 @@ package com.divinity.hmedia.rgrmechawarden.block;
 import com.divinity.hmedia.rgrmechawarden.block.be.ShockTrapBE;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.init.EffectInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -12,6 +13,7 @@ import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -46,7 +48,7 @@ public class ShockTrapBlock extends BaseEntityBlock {
                     if (cap.getNettedInvulnTicks() <= 0) {
                         if (!player.hasEffect(EffectInit.NETTED.get())) {
                             player.addEffect(new MobEffectInstance(EffectInit.NETTED.get(), -1, 0, false, false, false));
-                            player.sendSystemMessage(Component.literal("You are stuck in a trap! Press a random combination of jump/shift keys to break free!").withStyle(ChatFormatting.RED), true);
+                            player.sendSystemMessage(Component.literal("You are stuck in a trap! Press a random combination of jump/shift keys to break free!").withStyle(ChatFormatting.RED));
                         }
                         if (player.getHealth() - 1.0F <= 0) {
                             if (!cap.isHasLost()) {
@@ -56,7 +58,12 @@ public class ShockTrapBlock extends BaseEntityBlock {
                                 });
                             }
                         }
-                        else player.hurt(pLevel.damageSources().generic(), 1.0F);
+                        else {
+                            player.hurt(pLevel.damageSources().generic(), 1.0F);
+                            if (player.tickCount % 20 == 0) {
+                                player.level().playSound(null, player.blockPosition(), SoundInit.SHOCK_TRAP.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
+                            }
+                        }
                     }
                 });
             }

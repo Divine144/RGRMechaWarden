@@ -33,8 +33,7 @@ public class EntityInit {
             EntityType.Builder.<EmpOrbEntity>of(EmpOrbEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 
     public static final RegistryObject<EntityType<NukeEntity>> NUKE = registerEntity("nuke", () ->
-            EntityType.Builder.of(NukeEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F)
-                    .clientTrackingRange(10).updateInterval(10));
+            EntityType.Builder.of(NukeEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F));
 
     public static final RegistryObject<EntityType<DeepDarkDestroyerEntity>> DEEP_DARK_DESTROYER = registerEntity("deep_dark_destroyer", () ->
             EntityType.Builder.of(DeepDarkDestroyerEntity::new, MobCategory.MISC).fireImmune().sized(1F, 1F));

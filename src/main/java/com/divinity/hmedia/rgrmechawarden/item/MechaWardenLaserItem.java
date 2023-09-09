@@ -4,6 +4,8 @@ import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EffectInit;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersLaserGoal;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
@@ -64,15 +66,23 @@ public class MechaWardenLaserItem extends Item {
                         }
                         // TODO: Add sound
                         if (pRemainingUseDuration % 20 == 0) {
+                            pLevel.playSound(null, player.blockPosition(), SoundInit.WARDEN_LASER.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
                             holder.removeSkulk(cost);
                             MechaWardenUtils.rayTraceEntitiesWithAction(pLevel, player, 50, entity -> {
                                 if (entity instanceof LivingEntity target) {
                                     player.serverLevel().playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
                                     target.level().playSound(null, target.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
                                     target.hurt(pLevel.damageSources().sonicBoom(player), 6.0F);
+                                    if (target.isDeadOrDying()) {
+                                        MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersLaserGoal.class);
+                                    }
                                 }
                             }, false);
                         }
+                    }
+                    else {
+                        player.stopUsingItem();
+                        player.getCooldowns().addCooldown(this, 20 * 10);
                     }
                 }
             }

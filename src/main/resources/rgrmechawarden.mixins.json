@@ -4,10 +4,10 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "${mod_id}.refmap.json",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "ExplosionMixin"
   ],
   "client": [
-    "LightningBoldRendererMixin",
     "MinecraftMixin"
   ],
   "minVersion": "0.8.5"

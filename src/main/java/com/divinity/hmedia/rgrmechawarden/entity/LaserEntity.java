@@ -1,8 +1,11 @@
 package com.divinity.hmedia.rgrmechawarden.entity;
 
+import com.divinity.hmedia.rgrmechawarden.quest.goal.DamagePlayersMechaMorphGoal;
+import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -55,6 +58,9 @@ public class LaserEntity extends ThrowableProjectile implements GeoEntity {
         if (pResult.getEntity() != this.getOwner() && pResult.getEntity() instanceof LivingEntity living) {
             if (!level().isClientSide) {
                 living.hurt(this.damageSources().mobProjectile(this, getOwner() instanceof LivingEntity l ? l : null), damage);
+                if (getOwner() instanceof ServerPlayer player) {
+                    MechaWardenUtils.addToGenericQuestGoal(player, DamagePlayersMechaMorphGoal.class);
+                }
             }
         }
     }
