@@ -4,12 +4,16 @@ import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import dev._100media.hundredmediamorphs.HundredMediaMorphsMod;
 import dev._100media.hundredmediamorphs.morph.Morph;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.List;
 
 public class MorphInit {
     public static final DeferredRegister<Morph> MORPHS = DeferredRegister.create(new ResourceLocation(HundredMediaMorphsMod.MODID, "morphs"), RGRMechaWarden.MODID);
@@ -28,6 +32,7 @@ public class MorphInit {
 
             })
     ));
+
     public static final RegistryObject<Morph> MECHA_TEEN = MORPHS.register("mecha_teen", () -> new Morph(new Morph.Properties<>()
             .maxHealth(20)
             .dimensions(1f, 1f)

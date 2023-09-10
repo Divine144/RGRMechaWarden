@@ -26,6 +26,9 @@ public class EntityInit {
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerEntity("missile", () ->
             EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 
+    public static final RegistryObject<EntityType<DirectMissileEntity>> DIRECT_MISSILE = registerEntity("direct_missile", () ->
+            EntityType.Builder.of(DirectMissileEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
+
     public static final RegistryObject<EntityType<LaserEntity>> LASER = registerEntity("laser", () ->
             EntityType.Builder.<LaserEntity>of(LaserEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 

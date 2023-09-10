@@ -19,8 +19,6 @@ public class ItemInit {
 
     public static final RegistryObject<Item> MECHA_WARDEN_LASER = ITEMS.register("mecha_warden_laser", () -> new MechaWardenLaserItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> MECHA_MORPH = ITEMS.register("mecha_morph", () -> new MechaMorphItem(new Item.Properties().stacksTo(1)));
-
     public static final RegistryObject<Item> BLOCK_MORPH = ITEMS.register("block_morph", () -> new BlockMorphItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> SCULKY_SNACK = ITEMS.register("sculky_snack", () -> new SculkySnackItem(new Item.Properties().stacksTo(1).food(

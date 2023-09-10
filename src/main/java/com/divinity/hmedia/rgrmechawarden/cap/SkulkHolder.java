@@ -4,9 +4,13 @@ import com.divinity.hmedia.rgrmechawarden.network.NetworkHandler;
 import dev._100media.capabilitysyncer.core.EntityCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
+import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,6 +26,7 @@ public class SkulkHolder extends EntityCapability {
     private boolean isMechaBoard = false;
     private boolean hasLost = false;
     private boolean coolDownsReduced = false;
+    private boolean isInfinite = false;
 
     protected SkulkHolder(Entity entity) {
         super(entity);
@@ -48,6 +53,7 @@ public class SkulkHolder extends EntityCapability {
     }
 
     public boolean removeSkulk(int skulk) {
+        if (this.isInfinite) return true;
         int old = this.skulk;
         if (this.skulk - skulk < 0) {
             return false;
@@ -85,6 +91,12 @@ public class SkulkHolder extends EntityCapability {
 
     public void setMechaMorphed(boolean mechaMorphed) {
         isMechaMorphed = mechaMorphed;
+        if (!entity.level().isClientSide) {
+            if (mechaMorphed) {
+                setCurrentSize(EntityDimensions.scalable(0.65f, 0.65f));
+            }
+            else resetCurrentSize();
+        }
         updateTracking();
     }
 
@@ -94,6 +106,12 @@ public class SkulkHolder extends EntityCapability {
 
     public void setCamouflagedBlock(Block camouflagedBlock) {
         this.camouflagedBlock = camouflagedBlock;
+        if (!entity.level().isClientSide) {
+            if (camouflagedBlock != Blocks.AIR) {
+                setCurrentSize(EntityDimensions.scalable(0.65f, 0.65f));
+            }
+            else if (!this.isMechaMorphed) resetCurrentSize();
+        }
         updateTracking();
     }
 
@@ -134,6 +152,33 @@ public class SkulkHolder extends EntityCapability {
         updateTracking();
     }
 
+    public void resetCurrentSize() {
+        if (this.entity instanceof ServerPlayer player) {
+            var holder = MorphHolderAttacher.getMorphHolderUnwrap(player);
+            if (holder != null) {
+                holder.setDimensionsOverride(null, true);
+            }
+        }
+    }
+
+    public void setCurrentSize(EntityDimensions dimensions) {
+        if (entity instanceof ServerPlayer player) {
+            var holder = MorphHolderAttacher.getMorphHolderUnwrap(player);
+            if (holder != null) {
+                holder.setDimensionsOverride(dimensions, true);
+            }
+        }
+    }
+
+    public boolean isInfinite() {
+        return isInfinite;
+    }
+
+    public void setInfinite(boolean infinite) {
+        isInfinite = infinite;
+        updateTracking();
+    }
+
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
@@ -146,6 +191,7 @@ public class SkulkHolder extends EntityCapability {
         tag.putInt("nettedTicks", this.nettedInvulnTicks);
         tag.putBoolean("hasLost", this.hasLost);
         tag.putBoolean("reducedCooldown", this.coolDownsReduced);
+        tag.putBoolean("infinite", this.isInfinite);
         return tag;
     }
 
@@ -160,6 +206,7 @@ public class SkulkHolder extends EntityCapability {
         this.nettedInvulnTicks = nbt.getInt("nettedTicks");
         this.hasLost = nbt.getBoolean("hasLost");
         this.coolDownsReduced = nbt.getBoolean("reducedCooldown");
+        this.isInfinite = nbt.getBoolean("infinite");
     }
 
     @Override

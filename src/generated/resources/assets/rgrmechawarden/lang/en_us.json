@@ -1,5 +1,6 @@
 {
   "ability.rgrmechawarden.fusion_core_reactor": "Fusion Core Reactor",
+  "ability.rgrmechawarden.laser_turret_morph": "Laser Turret Morph",
   "ability.rgrmechawarden.laser_turret_shoot": "Laser Turret Shoot",
   "ability.rgrmechawarden.sculky_mecha_mines": "Sculky Mecha Mines",
   "ability.rgrmechawarden.tesla_coil": "Tesla Coil",
@@ -9,6 +10,7 @@
   "block.rgrmechawarden.sculky_mecha_mines": "Sculky Mecha Mines",
   "block.rgrmechawarden.shock_trap": "Shock Trap",
   "entity.rgrmechawarden.deep_dark_destroyer": "Deep Dark Destroyer",
+  "entity.rgrmechawarden.direct_missile": "Direct Missile",
   "entity.rgrmechawarden.emp_orb": "Emp Orb",
   "entity.rgrmechawarden.laser": "Laser",
   "entity.rgrmechawarden.missile": "Missile",
@@ -16,7 +18,6 @@
   "item.rgrmechawarden.block_morph": "Block Morph",
   "item.rgrmechawarden.deep_dark_destroyer": "Deep Dark Destroyer",
   "item.rgrmechawarden.disruptor_ray": "Disruptor Ray",
-  "item.rgrmechawarden.mecha_morph": "Mecha Morph",
   "item.rgrmechawarden.mecha_warden_laser": "Mecha Warden Laser",
   "item.rgrmechawarden.mecho_location": "Mecho Location",
   "item.rgrmechawarden.mega_magnet": "Mega Magnet",

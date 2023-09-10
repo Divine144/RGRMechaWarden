@@ -14,6 +14,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +40,7 @@ public class MechoLocationItem extends Item {
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(pPlayer);
         if (holder != null && holder.removeSkulk(20)) {
             pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.MECHO_LOCATION.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
-            var list = MechaWardenUtils.getEntitiesInRange(pPlayer, Player.class, 35, 25, 35, p -> p != pPlayer);
+            var list = MechaWardenUtils.getEntitiesInRange(pPlayer, Player.class, 45, 25, 45, p -> p != pPlayer);
             if (!list.isEmpty()) {
                 ((ServerPlayer) pPlayer).connection.send(new ClientboundSetTitleTextPacket(Component.literal("There are hunters nearby").withStyle(ChatFormatting.RED)));
                 for (Player player : list) {
@@ -53,11 +55,9 @@ public class MechoLocationItem extends Item {
                         .min(Comparator.comparing(entity -> entity.distanceToSqr(pPlayer.getX(), pPlayer.getY(), pPlayer.getZ())));
                 if (playerOptional.isPresent()) {
                     int distance = (int) pPlayer.distanceTo(playerOptional.get());
-                    Direction playerDirection = MechaWardenUtils.getDirectionFromTwoPoints(pPlayer.getEyePosition(0), playerOptional.get().getEyePosition(0));
-                    if (playerDirection != null) {
-                        ((ServerPlayer) pPlayer).connection.send(new ClientboundSetTitleTextPacket(Component.literal("The nearest hunter is").withStyle(ChatFormatting.RED)));
-                        ((ServerPlayer) pPlayer).connection.send(new ClientboundSetSubtitleTextPacket(Component.literal("%s blocks away to the %s".formatted(distance, playerDirection.getOpposite().getName())).withStyle(ChatFormatting.RED)));
-                    }
+                    Direction playerDirection = MechaWardenUtils.findHorizontalDirection(pPlayer.blockPosition(), playerOptional.get().getEyePosition(0));
+                    ((ServerPlayer) pPlayer).connection.send(new ClientboundSetTitleTextPacket(Component.literal("The nearest hunter is").withStyle(ChatFormatting.RED)));
+                    ((ServerPlayer) pPlayer).connection.send(new ClientboundSetSubtitleTextPacket(Component.literal("%s blocks away to the %s".formatted(distance, playerDirection.getName())).withStyle(ChatFormatting.RED)));
                 }
             }
             pPlayer.getCooldowns().addCooldown(this, 20 * 10);

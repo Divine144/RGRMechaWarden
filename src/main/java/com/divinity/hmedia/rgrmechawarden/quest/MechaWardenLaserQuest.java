@@ -2,6 +2,7 @@ package com.divinity.hmedia.rgrmechawarden.quest;
 
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.KillBatBowGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersWristRocketsGoal;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import dev._100media.hundredmediaquests.goal.KillSpecificTypeGoal;
@@ -32,19 +33,7 @@ public class MechaWardenLaserQuest extends Quest {
     protected List<QuestGoal> initializeGoals() {
         List<QuestGoal> goals = new ArrayList<>();
         goals.add(new AquireAdvancementGoal("voluntary_exile", "voluntary_exile_advancement_goal"));
-        goals.add(new KillSpecificTypeGoal(5, EntityType.BAT) {
-            @Override
-            public boolean tallyKill(Entity entity, DamageSource source) {
-                return source.getEntity() instanceof AbstractArrow && source.getDirectEntity() instanceof ServerPlayer player
-                        && MorphHolderAttacher.getCurrentMorph(player).isPresent()
-                        && player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.BOW) && super.tallyKill(entity, source);
-            }
-
-            @Override
-            public String getDescriptionId() {
-                return "quest.goal.rgrmechawarden.kill_bat_bow_goal";
-            }
-        });
+        goals.add(new KillBatBowGoal(5));
         goals.add(new KillPlayersWristRocketsGoal(3));
         return goals;
     }

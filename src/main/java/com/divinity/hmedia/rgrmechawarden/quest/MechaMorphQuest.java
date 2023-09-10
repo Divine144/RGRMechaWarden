@@ -34,8 +34,8 @@ public class MechaMorphQuest extends Quest {
     @Override
     protected List<QuestReward> initializeRewards() {
         List<QuestReward> rewards = new ArrayList<>();
-        rewards.add(new ItemQuestReward(new ItemStack(ItemInit.MECHA_MORPH.get())));
         rewards.add(new ItemQuestReward(new ItemStack(ItemInit.BLOCK_MORPH.get())));
+        rewards.add(new AbilityQuestReward(AbilityInit.LASER_TURRET_MORPH));
         rewards.add(new AbilityQuestReward(AbilityInit.LASER_TURRET_SHOOT));
         return rewards;
     }

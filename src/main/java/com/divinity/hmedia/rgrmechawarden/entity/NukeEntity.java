@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -40,10 +41,16 @@ public class NukeEntity extends PrimedTnt implements GeoEntity {
     public static final int RADIUS = 60;
     private final AnimatableInstanceCache instanceCache = GeckoLibUtil.createInstanceCache(this);
     private LivingEntity goodOwner;
+    private Vec3 targetPos = Vec3.ZERO;
+    private boolean shouldGoToTargetPos;
 
     public NukeEntity(EntityType<? extends PrimedTnt> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
+
+   public void setTargetPos(Vec3 targetPos) {
+        this.targetPos = targetPos;
+   }
 
     public void setGoodOwner(LivingEntity goodOwner) {
         this.goodOwner = goodOwner;
@@ -59,15 +66,25 @@ public class NukeEntity extends PrimedTnt implements GeoEntity {
         else {
             setFuse(20 * 6);
         }
+        if (!this.level().isClientSide) {
+            if (this.tickCount % 60 == 0) {
+                shouldGoToTargetPos = true;
+            }
+            if (shouldGoToTargetPos) {
+                if (!onGround()) {
+                    MechaWardenUtils.pullEntityToPoint(this, targetPos, 3);
+                }
+            }
+        }
         super.tick();
     }
 
     @Override
     protected void explode() {
-        Explosion explosion = level().explode(goodOwner, getX(), getY(), getZ(), 10, Level.ExplosionInteraction.NONE);
+        Explosion explosion = level().explode(goodOwner, getX(), getY(), getZ(), 20, Level.ExplosionInteraction.TNT);
         explosion.explode();
         explosion.finalizeExplosion(true);
-//        MechaWardenUtils.fancyExplosion(position(), level(), RADIUS, Blocks.AIR.defaultBlockState());
+        MechaWardenUtils.fancyExplosion(position(), level(), RADIUS, Blocks.AIR.defaultBlockState());
         List<Entity> entities = level().getEntities((Entity) null, getBoundingBox().inflate(50), e -> e instanceof Player);
         for (Entity entity : entities) {
             level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1, 1);

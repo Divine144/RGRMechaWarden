@@ -1,10 +1,7 @@
 package com.divinity.hmedia.rgrmechawarden.init;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
-import com.divinity.hmedia.rgrmechawarden.ability.MechaMinesAbility;
-import com.divinity.hmedia.rgrmechawarden.ability.ReactorCoreEjectionAbility;
-import com.divinity.hmedia.rgrmechawarden.ability.ShootLaserTurretAbility;
-import com.divinity.hmedia.rgrmechawarden.ability.TeslaCoilAbility;
+import com.divinity.hmedia.rgrmechawarden.ability.*;
 import dev._100media.hundredmediaabilities.HundredMediaAbilitiesMod;
 import dev._100media.hundredmediaabilities.ability.Ability;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +13,8 @@ public class AbilityInit {
     public static final DeferredRegister<Ability> ABILITIES = DeferredRegister.create(new ResourceLocation(HundredMediaAbilitiesMod.MODID, "abilities"), RGRMechaWarden.MODID);
 
     public static final RegistryObject<Ability> LASER_TURRET_SHOOT = ABILITIES.register("laser_turret_shoot", ShootLaserTurretAbility::new);
+
+    public static final RegistryObject<Ability> LASER_TURRET_MORPH = ABILITIES.register("laser_turret_morph", LaserTurretAbility::new);
 
     public static final RegistryObject<Ability> TESLA_COIL = ABILITIES.register("tesla_coil", TeslaCoilAbility::new);
 

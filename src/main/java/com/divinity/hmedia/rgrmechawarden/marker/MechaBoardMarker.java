@@ -50,7 +50,6 @@ public class MechaBoardMarker extends FlightMarker {
                 BlockHitResult result = MechaWardenUtils.blockTrace(player, ClipContext.Fluid.NONE, 100, true);
                 if (result != null) {
                     float distanceAboveGround = Mth.abs((float) player.getY() - (float) result.getLocation().y);
-                    System.out.println(distanceAboveGround);
                     if (currentMorph == MorphInit.BABY_MECHA.get()) {
                         if (distanceAboveGround >= 3) {
                             this.disableFlight(level, player);

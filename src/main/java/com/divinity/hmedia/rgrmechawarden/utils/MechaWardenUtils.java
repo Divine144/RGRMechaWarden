@@ -1,8 +1,12 @@
 package com.divinity.hmedia.rgrmechawarden.utils;
 
+import com.divinity.hmedia.rgrmechawarden.init.MorphInit;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import dev._100media.hundredmediamorphs.morph.Morph;
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +34,8 @@ import java.util.stream.Collectors;
 public class MechaWardenUtils {
 
     private static final float GRAVITY_STRENGTH = 0.075f;
+
+    public static final Map<Morph, List<Pair<MobEffect, Integer>>> morphEffectMap = Maps.newConcurrentMap();
 
     public static boolean hasItemEitherHands(Player player, Item item) {
         return player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == item || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == item;
@@ -139,11 +145,11 @@ public class MechaWardenUtils {
         }
     }
 
-    public static void pullEntityToPoint(LivingEntity livingEntity, Vec3 to) {
+    public static void pullEntityToPoint(Entity livingEntity, Vec3 to) {
         pullEntityToPoint(livingEntity, to, 1);
     }
 
-    public static void pullEntityToPoint(LivingEntity livingEntity, Vec3 to, float strength) {
+    public static void pullEntityToPoint(Entity livingEntity, Vec3 to, float strength) {
         Vec3 pullDirection = to.subtract(livingEntity.position());
         double gravity = interpolate(0, GRAVITY_STRENGTH, strength);
         Vec3 pull = pullDirection.normalize().scale(gravity);
@@ -151,14 +157,14 @@ public class MechaWardenUtils {
         livingEntity.hurtMarked = true;
     }
 
-    public static void pullEntitiesToPoint(List<LivingEntity> list, Vec3 to) {
-        for (LivingEntity living : list) {
+    public static void pullEntitiesToPoint(List<Entity> list, Vec3 to) {
+        for (Entity living : list) {
             pullEntityToPoint(living, to);
         }
     }
 
-    public static void pullEntitiesToPoint(List<LivingEntity> list, Vec3 to, float strength) {
-        for (LivingEntity living : list) {
+    public static void pullEntitiesToPoint(List<Entity> list, Vec3 to, float strength) {
+        for (Entity living : list) {
             pullEntityToPoint(living, to, strength);
         }
     }

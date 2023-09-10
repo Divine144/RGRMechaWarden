@@ -113,13 +113,16 @@ public class EmpOrbEntity extends Projectile implements GeoEntity {
             Entity target = result.getEntity();
             if (target instanceof ServerPlayer player) {
                 player.sendSystemMessage(Component.literal("You got hit by an EMP Blast!").withStyle(ChatFormatting.RED), true);
-                player.getCooldowns().addCooldown(ItemInit.MECHA_MORPH.get(), 20 * 5);
                 player.getCooldowns().addCooldown(ItemInit.DEEP_DARK_DESTROYER.get(), 20 * 5);
                 player.getCooldowns().addCooldown(ItemInit.MECHA_WARDEN_LASER.get(), 20 * 5);
                 player.getCooldowns().addCooldown(ItemInit.MECHO_LOCATION.get(), 20 * 5);
                 player.getCooldowns().addCooldown(ItemInit.MOUNTED_WRIST_ROCKETS.get(), 20 * 5);
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 5, 1));
-                AbilityHolderAttacher.getAbilityHolder(player).ifPresent(p -> p.addCooldown(AbilityInit.SCULKY_MECHA_MINES.get(), true));
+                AbilityHolderAttacher.getAbilityHolder(player).ifPresent(p -> {
+                    p.addCooldown(AbilityInit.SCULKY_MECHA_MINES.get(), true);
+                    p.addCooldown(AbilityInit.LASER_TURRET_MORPH.get(), true);
+                });
+
                 SkulkHolderAttacher.getSkulkHolder(player).ifPresent(p -> p.setCoolDownsReduced(true));
             }
             target.hurt(this.level().damageSources().indirectMagic(this, this.getOwner()), 1F);

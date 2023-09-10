@@ -15,17 +15,4 @@ public class SpecialSculkBlock extends SculkBlock {
     public SpecialSculkBlock(Properties pProperties) {
         super(pProperties);
     }
-
-
-    // TODO: Change to event
-    @Override
-    public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if (pEntity instanceof LivingEntity living && !living.level().isClientSide && living.getFeetBlockState().is(this)) {
-            if (MorphHolderAttacher.getCurrentMorph(living).isEmpty()) {
-                if (!living.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
-                    living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
-                }
-            }
-        }
-    }
 }

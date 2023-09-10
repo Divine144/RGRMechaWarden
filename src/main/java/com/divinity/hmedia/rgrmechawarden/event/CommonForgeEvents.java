@@ -1,16 +1,15 @@
 package com.divinity.hmedia.rgrmechawarden.event;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
+import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolder;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.init.BlockInit;
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
 import com.divinity.hmedia.rgrmechawarden.init.MorphInit;
-import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
-import com.divinity.hmedia.rgrmechawarden.quest.goal.DolphinGraceEffectGoal;
-import com.divinity.hmedia.rgrmechawarden.quest.goal.MineSpawnerNetherGoal;
-import com.divinity.hmedia.rgrmechawarden.quest.goal.TradeWithVillagerGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.goal.*;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import dev._100media.hundredmediaquests.cap.QuestHolderAttacher;
 import net.minecraft.ChatFormatting;
@@ -25,19 +24,25 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.level.BlockEvent;
@@ -66,15 +71,63 @@ public class CommonForgeEvents {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         var dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal(RGRMechaWarden.MODID)
-                .then(Commands.literal("test")
-                        .then(Commands.argument("player", EntityArgument.player())
-                                .executes(context -> {
-
-                                    return Command.SINGLE_SUCCESS;
-                                })
+                .then(Commands.literal("energy")
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("value", IntegerArgumentType.integer())
+                                        .then(Commands.argument("player", EntityArgument.player())
+                                                .executes(context -> {
+                                                    int value = IntegerArgumentType.getInteger(context, "value");
+                                                    Player player = EntityArgument.getPlayer(context, "player");
+                                                    var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                                                    if (holder != null) {
+                                                        holder.setSkulk(value);
+                                                    }
+                                                    return Command.SINGLE_SUCCESS;
+                                                })
+                                        )
+                                )
+                        )
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("value", IntegerArgumentType.integer())
+                                        .then(Commands.argument("player", EntityArgument.player())
+                                                .executes(context -> {
+                                                    int value = IntegerArgumentType.getInteger(context, "value");
+                                                    Player player = EntityArgument.getPlayer(context, "player");
+                                                    var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                                                    if (holder != null) {
+                                                        holder.setSkulk(holder.getSkulk() + value);
+                                                    }
+                                                    return Command.SINGLE_SUCCESS;
+                                                })
+                                        )
+                                )
+                        )
+                        .then(Commands.literal("infinite")
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(context -> {
+                                            Player player = EntityArgument.getPlayer(context, "player");
+                                            var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                                            if (holder != null) {
+                                                holder.setInfinite(!holder.isInfinite());
+                                            }
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
                         )
                 )
         );
+    }
+
+    @SubscribeEvent
+    public static void projectileHit(ProjectileImpactEvent event) {
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
+        if (event.getRayTraceResult() instanceof EntityHitResult eRes && event.getProjectile() instanceof AbstractArrow arrow && arrow.getOwner() instanceof ServerPlayer player && eRes.getEntity() instanceof Bat bat && bat.isDeadOrDying()) {
+            if (MorphHolderAttacher.getCurrentMorph(player).isPresent()) {
+                MechaWardenUtils.addToGenericQuestGoal(player, KillBatBowGoal.class);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -126,14 +179,38 @@ public class CommonForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof ServerPlayer entity) {
+            var morph = MorphHolderAttacher.getCurrentMorphUnwrap(entity);
+            if (morph != null) {
+                morph.onMorphedTo(entity);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.player instanceof ServerPlayer player && event.phase == TickEvent.Phase.END) {
+            if (player.getFeetBlockState().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
+                if (MorphHolderAttacher.getCurrentMorph(player).isEmpty()) {
+                    if (!player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
+                    }
+                }
+            }
             SkulkHolderAttacher.getSkulkHolder(player).ifPresent(cap -> {
                 if (cap.getNettedInvulnTicks() > 0) {
                     cap.setNettedInvulnTicks(cap.getNettedInvulnTicks() - 1);
                 }
-                if (player.tickCount % 20 == 0) {
-                    cap.setSkulk(cap.getSkulk() + cap.getSkulkRegen());
+                if (!cap.isInfinite()) {
+                    if (player.tickCount % 20 == 0) {
+                        cap.setSkulk(cap.getSkulk() + cap.getSkulkRegen());
+                    }
+                }
+                else {
+                    if (cap.getSkulk() != cap.getSkulkCap()) {
+                        cap.setSkulk(cap.getSkulkCap());
+                    }
                 }
             });
         }

@@ -64,7 +64,6 @@ public class MechaWardenLaserItem extends Item {
                                 }
                             });
                         }
-                        // TODO: Add sound
                         if (pRemainingUseDuration % 20 == 0) {
                             pLevel.playSound(null, player.blockPosition(), SoundInit.WARDEN_LASER.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
                             holder.removeSkulk(cost);
@@ -72,8 +71,8 @@ public class MechaWardenLaserItem extends Item {
                                 if (entity instanceof LivingEntity target) {
                                     player.serverLevel().playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
                                     target.level().playSound(null, target.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
-                                    target.hurt(pLevel.damageSources().sonicBoom(player), 6.0F);
-                                    if (target.isDeadOrDying()) {
+                                    target.hurt(pLevel.damageSources().indirectMagic(player, player), 12.0F);
+                                    if (target.getHealth() <= 0) {
                                         MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersLaserGoal.class);
                                     }
                                 }

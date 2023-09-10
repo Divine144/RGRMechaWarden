@@ -2,10 +2,15 @@ package com.divinity.hmedia.rgrmechawarden.event;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.client.renderer.DirectMissileEntityRenderer;
+import com.divinity.hmedia.rgrmechawarden.client.renderer.MissileEntityRenderer;
+import com.divinity.hmedia.rgrmechawarden.entity.DirectMissileEntity;
+import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import com.divinity.hmedia.rgrmechawarden.init.*;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Axis;
 import dev._100media.hundredmediageckolib.client.animatable.IHasGeoRenderer;
 import dev._100media.hundredmediageckolib.client.animatable.SimpleAnimatable;
 import dev._100media.hundredmediageckolib.client.model.SimpleGeoEntityModel;
@@ -69,7 +74,8 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 
-        event.registerEntityRenderer(EntityInit.MISSILE.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "missile")));
+        event.registerEntityRenderer(EntityInit.MISSILE.get(), MissileEntityRenderer::new);
+        event.registerEntityRenderer(EntityInit.DIRECT_MISSILE.get(), DirectMissileEntityRenderer::new);
         event.registerEntityRenderer(EntityInit.NUKE.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "nuke")));
 
         // TODO: Change these
@@ -144,13 +150,30 @@ public class ClientModEvents {
     private static <T extends IHasGeoRenderer & GeoAnimatable> void createSimpleMorphRenderer(Morph morph, String name, T animatable, float scale) {
         MorphRenderers.registerPlayerMorphRenderer(morph, context -> {
             var renderer = new GeoPlayerRenderer<>(context, new SimpleGeoPlayerModel<>(RGRMechaWarden.MODID, name) {
-                @Override
-                public ResourceLocation getTextureResource(T animatable1, @Nullable AbstractClientPlayer player) {
-                    return new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/" + name + ".png");
-                }
-            }, animatable) {
                 private static final ResourceLocation TURRET_MODEL = new ResourceLocation(RGRMechaWarden.MODID, "geo/entity/turret.geo.json");
                 private static final ResourceLocation TURRET_TEXTURE = new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/turret.png");
+                @Override
+                public ResourceLocation getTextureResource(T animatable1, @Nullable AbstractClientPlayer player) {
+                    if (player != null) {
+                        var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                        if (holder != null && holder.isMechaMorphed()) {
+                            return TURRET_TEXTURE;
+                        }
+                    }
+                    return new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/" + name + ".png");
+                }
+
+                @Override
+                public ResourceLocation getModelResource(T animatable, @Nullable AbstractClientPlayer player) {
+                    if (player != null) {
+                        var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+                        if (holder != null && holder.isMechaMorphed()) {
+                            return TURRET_MODEL;
+                        }
+                    }
+                    return super.getModelResource(animatable, player);
+                }
+            }, animatable) {
 
                 @Override
                 public void render(AbstractClientPlayer player, T animatable1, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
@@ -158,19 +181,7 @@ public class ClientModEvents {
                         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
                         if (holder != null) {
                             poseStack.pushPose();
-                            if (holder.isMechaMorphed()) {
-                                RenderType renderType =  RenderType.entityCutout(TURRET_TEXTURE);
-                                var model = GeckoLibCache.getBakedModels().get(TURRET_MODEL);
-                                Color renderColor = Color.WHITE;
-                                float red = renderColor.getRedFloat();
-                                float green = renderColor.getGreenFloat();
-                                float blue = renderColor.getBlueFloat();
-                                float alpha = renderColor.getAlphaFloat();
-                                this.actuallyRender(poseStack, animatable1, model,
-                                        renderType, bufferSource, bufferSource.getBuffer(renderType), false, partialTick, packedLight,
-                                        OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
-                            }
-                            else if (holder.getCamouflagedBlock() != Blocks.AIR) {
+                            if (!holder.isMechaMorphed() && holder.getCamouflagedBlock() != Blocks.AIR) {
                                 poseStack.translate(-0.5, 0, -0.5);
                                 Minecraft.getInstance().getBlockRenderer().renderSingleBlock(holder.getCamouflagedBlock().defaultBlockState(), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
                             }

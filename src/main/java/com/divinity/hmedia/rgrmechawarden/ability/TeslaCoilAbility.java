@@ -34,11 +34,10 @@ public class TeslaCoilAbility extends Ability {
                         Vec3 origin = player.getEyePosition(1.0f);
                         Vec3 traceVector = entity.position().subtract(origin);
                         Vec3 direction = traceVector.normalize();
-
-                        // TODO: Maybe change this? idk looks good
+                        BlockPositionSource source = new BlockPositionSource(entity.blockPosition());
                         for (float i = 0.1f; i < Mth.floor(traceVector.length()) + 15; ++i) {
                             Vec3 particlePosition = origin.add(direction.scale(i));
-                            player.serverLevel().sendParticles(new VibrationParticleOption(new BlockPositionSource(entity.blockPosition()), 30), particlePosition.x, particlePosition.y, particlePosition.z, 10, 0, 0, 0, 0);
+                            player.serverLevel().sendParticles(new VibrationParticleOption(source, 30), particlePosition.x, particlePosition.y, particlePosition.z, 10, 0, 0, 0, 0);
                         }
                     }
                     holder.removeSkulk(5);

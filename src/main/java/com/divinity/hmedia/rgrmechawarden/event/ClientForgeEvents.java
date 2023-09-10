@@ -25,6 +25,7 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,8 @@ public class ClientForgeEvents {
         if (ClientModEvents.SKILL_TREE_KEY.isDown()) {
             HMQNetworkHandler.INSTANCE.sendToServer(new OpenMainTreePacket(MenuInit.SKILL_TREE.get()));
         }
-        LocalPlayer player = Minecraft.getInstance().player;
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
         if (player != null) {
             if (player.hasEffect(EffectInit.NETTED.get())) {
                 if (inputList.isEmpty()) {
@@ -58,17 +60,17 @@ public class ClientForgeEvents {
                         if (playerInput == PlayerInput.JUMPING) {
                             inputList.remove(0);
                             String message = inputList.isEmpty() ? "You broke free!" : "Correct! %s more actions left!".formatted(inputList.size());
-                            player.sendSystemMessage(Component.literal(message).withStyle(ChatFormatting.GREEN));
+                            minecraft.getChatListener().handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.GREEN), true);
                         }
-                        else player.sendSystemMessage(Component.literal("Incorrect! %s more actions left!".formatted(inputList.size())).withStyle(ChatFormatting.RED));
+                        else minecraft.getChatListener().handleSystemMessage(Component.literal("Press %s".formatted("Shift!")).withStyle(ChatFormatting.RED), true);
                     }
                     else if (event.getKey() == GLFW.GLFW_KEY_LEFT_SHIFT && event.getAction() == GLFW.GLFW_PRESS) {
                         if (playerInput == PlayerInput.SHIFTING) {
                             inputList.remove(0);
                             String message = inputList.isEmpty() ? "You broke free!" : "Correct! %s more actions left!".formatted(inputList.size());
-                            player.sendSystemMessage(Component.literal(message).withStyle(ChatFormatting.GREEN));
+                            minecraft.getChatListener().handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.GREEN), true);
                         }
-                        else player.sendSystemMessage(Component.literal("Incorrect! %s more actions left!".formatted(inputList.size())).withStyle(ChatFormatting.RED));
+                        else minecraft.getChatListener().handleSystemMessage(Component.literal("Press %s".formatted("Space!")).withStyle(ChatFormatting.RED), true);
                     }
                 }
             }
@@ -79,13 +81,14 @@ public class ClientForgeEvents {
     public static void movementInputUpdate(MovementInputUpdateEvent event) {
         Player player = event.getEntity();
         Input input = event.getInput();
-        if (player.hasEffect(EffectInit.NETTED.get())) {
+        var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+        if (player.hasEffect(EffectInit.NETTED.get()) || holder != null && holder.isMechaMorphed()) {
             input.up = false;
             input.down = false;
             input.left = false;
             input.right = false;
-//                input.jumping = false;
-//                input.shiftKeyDown = false;
+            input.jumping = false;
+            input.shiftKeyDown = false;
             input.leftImpulse = 0;
             input.forwardImpulse = 0;
         }

@@ -48,7 +48,7 @@ public class ShockTrapBlock extends BaseEntityBlock {
                     if (cap.getNettedInvulnTicks() <= 0) {
                         if (!player.hasEffect(EffectInit.NETTED.get())) {
                             player.addEffect(new MobEffectInstance(EffectInit.NETTED.get(), -1, 0, false, false, false));
-                            player.sendSystemMessage(Component.literal("You are stuck in a trap! Press a random combination of jump/shift keys to break free!").withStyle(ChatFormatting.RED));
+                            player.sendSystemMessage(Component.literal("You are stuck in a trap! Press the Jump/Shift Keys to break free!").withStyle(ChatFormatting.RED), true);
                         }
                         if (player.getHealth() - 1.0F <= 0) {
                             if (!cap.isHasLost()) {
