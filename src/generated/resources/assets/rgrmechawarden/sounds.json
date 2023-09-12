@@ -1,4 +1,9 @@
 {
+  "deep_dark": {
+    "sounds": [
+      "rgrmechawarden:deep_dark"
+    ]
+  },
   "deep_dark_destroyer": {
     "sounds": [
       "rgrmechawarden:deep_dark_destroyer"
@@ -7,6 +12,11 @@
   "fusion_reactor": {
     "sounds": [
       "rgrmechawarden:fusion_reactor"
+    ]
+  },
+  "laser": {
+    "sounds": [
+      "rgrmechawarden:laser"
     ]
   },
   "mecha_mines": {

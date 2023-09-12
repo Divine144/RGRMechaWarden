@@ -41,6 +41,7 @@ public class ModLangProvider extends LanguageProvider {
         add("itemGroup.hundredMediaTab", "100 Media");
         add("key.rgrmechawarden.skill_tree", "Open Skill Tree");
         add("key.category.rgrmechawarden", "RGRMechaWarden");
+        add("effect.rgrmechawarden.lock_on", "Targeted");
 
         // Quest Descriptions
         add("quest.goal.rgrmechawarden.sound_of_music_advancement_goal.description", "Earn the Advancement \"Sound of Music\"");

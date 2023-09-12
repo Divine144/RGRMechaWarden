@@ -73,8 +73,8 @@ public class DisruptorRayItem extends Item implements GeoItem {
                         protected void renderInGui(ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
                             poseStack.pushPose();
                             poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                            poseStack.scale(1.2f, 1.2f, 1.2f);
-                            poseStack.translate(0.05, -0.25, -0.1);
+                            poseStack.scale(1f, 1f, 1f);
+                            poseStack.translate(0.05, -0.45, -0.1);
                             super.renderInGui(transformType, poseStack, bufferSource, packedLight, packedOverlay);
                             poseStack.popPose();
                         }

@@ -104,7 +104,7 @@ public class MountedWristRocketsItem extends Item {
                         if (cap.removeSkulk(10)) {
                             for (int j = 0; j < 2; j++) {
                                 MissileEntity missile = new MissileEntity(EntityInit.MISSILE.get(), pLevel);
-                                missile.setPos(pPlayer.getX(), pPlayer.getEyeY(), pPlayer.getZ());
+                                missile.setPos(pPlayer.position().offsetRandom(pPlayer.getRandom(), 0.7F));
                                 missile.setOwner(pPlayer);
                                 missile.setTarget(entity);
                                 pLevel.addFreshEntity(missile);

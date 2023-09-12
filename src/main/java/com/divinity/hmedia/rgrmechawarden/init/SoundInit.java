@@ -18,6 +18,8 @@ public class SoundInit {
     public static final RegistryObject<SoundEvent> TESLA_COIL = sound("tesla_coil");
     public static final RegistryObject<SoundEvent> MECHA_MINES = sound("mecha_mines");
     public static final RegistryObject<SoundEvent> DEEP_DARK_DESTROYER = sound("deep_dark_destroyer");
+    public static final RegistryObject<SoundEvent> LASER = sound("laser");
+    public static final RegistryObject<SoundEvent> DEEP_DARK = sound("deep_dark");
 
     private static RegistryObject<SoundEvent> sound(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(RGRMechaWarden.MODID, name)));

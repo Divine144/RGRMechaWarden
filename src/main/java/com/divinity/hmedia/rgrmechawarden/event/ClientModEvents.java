@@ -103,42 +103,42 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void initClient(FMLClientSetupEvent event) {
         MenuScreens.register(MenuInit.SKILL_TREE.get(), (AbstractContainerMenu menu, Inventory inv, Component title) -> new TreeScreen(menu, inv, title,
-                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/skill_tree.png"), 21, 22,
+                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/skill_tree.png"), 23, 23,
                 Arrays.asList(
-                        new Pair<>(SkillInit.EVOLUTION_TREE, new Pair<>(56, 80)),
-                        new Pair<>(SkillInit.COMBAT_TREE, new Pair<>(115, 80)),
-                        new Pair<>(SkillInit.UTILITY_TREE, new Pair<>(170, 80))
-                ), 256, 256, 256, 165
+                        new Pair<>(SkillInit.EVOLUTION_TREE, new Pair<>(66, 87)),
+                        new Pair<>(SkillInit.COMBAT_TREE, new Pair<>(114, 87)),
+                        new Pair<>(SkillInit.UTILITY_TREE, new Pair<>(163, 87))
+                ), 256, 256, 256, 174
         ));
         MenuScreens.register(MenuInit.EVOLUTION_TREE.get(), (AbstractContainerMenu menu, Inventory inv, Component title) -> new SkillScreen(menu, inv, title,
-                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/evolution.png"), 20, 20,
+                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/evolution.png"), 27, 29,
                 Arrays.asList(
-                        new Pair<>(38, 87),
-                        new Pair<>(76, 87),
-                        new Pair<>(114, 87),
-                        new Pair<>(152, 87),
-                        new Pair<>(188, 87)
-                ), SkillInit.EVOLUTION_TREE.get(), 256, 256, 256, 230
+                        new Pair<>(37, 45),
+                        new Pair<>(75, 45),
+                        new Pair<>(113, 45),
+                        new Pair<>(150, 45),
+                        new Pair<>(188, 45)
+                ), SkillInit.EVOLUTION_TREE.get(), 256, 256, 256, 163
         ));
         MenuScreens.register(MenuInit.COMBAT_TREE.get(), (AbstractContainerMenu menu, Inventory inv, Component title) -> new QuestSkillScreen(menu, inv, title,
-                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/combat.png"), 17, 16,
+                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/combat.png"), 30, 30,
                 Arrays.asList(
-                        new Pair<>(57, 74),
-                        new Pair<>(98, 69),
-                        new Pair<>(133, 64),
-                        new Pair<>(168, 69),
-                        new Pair<>(197, 75)
-                ), SkillInit.COMBAT_TREE.get(), 256, 256, 256, 189
+                        new Pair<>(36, 67),
+                        new Pair<>(74, 67),
+                        new Pair<>(112, 67),
+                        new Pair<>(150, 67),
+                        new Pair<>(188, 67)
+                ), SkillInit.COMBAT_TREE.get(), 256, 256, 256, 161
         ));
         MenuScreens.register(MenuInit.UTILITY_TREE.get(), (AbstractContainerMenu menu, Inventory inv, Component title) -> new SkillScreen(menu, inv, title,
-                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/utility.png"), 21, 20,
+                new ResourceLocation(RGRMechaWarden.MODID, "textures/gui/screen/utility.png"), 27, 29,
                 Arrays.asList(
-                        new Pair<>(28, 90),
-                        new Pair<>(76, 88),
-                        new Pair<>(119, 91),
-                        new Pair<>(167, 89),
-                        new Pair<>(209, 91)
-                ), SkillInit.UTILITY_TREE.get(), 256, 256, 256, 192
+                        new Pair<>(37, 57),
+                        new Pair<>(75, 57),
+                        new Pair<>(113, 57),
+                        new Pair<>(150, 57),
+                        new Pair<>(188, 57)
+                ), SkillInit.UTILITY_TREE.get(), 256, 256, 256, 163
         ));
     }
 

@@ -48,11 +48,6 @@ public class MissileEntity extends Entity implements GeoEntity {
 
         if (!level().isClientSide && (target.distanceToSqr(this) <= 2 * 2 || (antiAir && !level().getBlockState(blockPosition()).isAir()))) {
             level().explode(owner, getX(), getY(), getZ(), 2, Level.ExplosionInteraction.NONE);
-            if (target != null && target.getHealth() <= 0) {
-                if (owner instanceof ServerPlayer player) {
-                    MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersWristRocketsGoal.class);
-                }
-            }
             discard();
             return;
         }

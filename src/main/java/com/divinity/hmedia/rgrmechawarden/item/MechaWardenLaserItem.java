@@ -72,9 +72,6 @@ public class MechaWardenLaserItem extends Item {
                                     player.serverLevel().playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
                                     target.level().playSound(null, target.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.0f, 1.0f);
                                     target.hurt(pLevel.damageSources().indirectMagic(player, player), 12.0F);
-                                    if (target.getHealth() <= 0) {
-                                        MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersLaserGoal.class);
-                                    }
                                 }
                             }, false);
                         }

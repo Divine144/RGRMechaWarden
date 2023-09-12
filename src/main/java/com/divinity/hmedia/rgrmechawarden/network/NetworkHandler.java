@@ -29,9 +29,7 @@ public class NetworkHandler {
                 .add(EscapeNetPacket::register)
                 .add(UpdateChargingStationPacket::register)
                 .build();
-
         SimpleEntityCapabilityStatusPacket.registerRetriever(SkulkHolderAttacher.EXAMPLE_RL, SkulkHolderAttacher::getSkulkHolderUnwrap);
-
         packets.forEach(consumer -> consumer.accept(INSTANCE, getNextId()));
     }
 

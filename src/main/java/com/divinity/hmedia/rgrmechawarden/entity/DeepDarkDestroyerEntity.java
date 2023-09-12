@@ -1,11 +1,13 @@
 package com.divinity.hmedia.rgrmechawarden.entity;
 
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -44,6 +46,7 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
     @Override
     public void tick() {
         super.tick();
+
         if (!this.level().isClientSide) {
             if (this.getOwner() != null && this.distanceTo(getOwner()) >= 50) {
                 discard();
@@ -52,8 +55,10 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
             if (entityData.get(SHOULD_GROW)) {
                 this.setDeltaMovement(Vec3.ZERO);
                 if (getGrowTicks() < STOP_GROWING_TICK) {
+                    if (getGrowTicks() == 0) {
+                        this.level().playSound(null, this.blockPosition(), SoundInit.DEEP_DARK.get(), SoundSource.PLAYERS, 0.6f, 1f);
+                    }
                     setGrowTicks(getGrowTicks() + 1);
-
                     radius += RADIUS_PER_TICK;
                     double radiusSqr = radius * radius;
                     double pullRadius = (radius * REACH_MODIFIER) + MIN_REACH;
@@ -113,7 +118,6 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
                             }
                         }
                     }
-
                     if (getGrowTicks() == STOP_GROWING_TICK) {
                         //clean up any noGravity on falling blocks that may have survived
                         double broomSize = (radius + radius + MIN_REACH + MIN_REACH) * REACH_MODIFIER * 5;
@@ -121,6 +125,7 @@ public class DeepDarkDestroyerEntity extends ThrowableProjectile implements GeoE
                             entity.setNoGravity(false);
                         }
                         radius = 0;
+                        level().explode(getOwner(), getX(), getY(), getZ(), 2, Level.ExplosionInteraction.NONE);
                         discard();
                     }
                 }

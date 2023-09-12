@@ -9,6 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -44,7 +46,9 @@ public class MechoLocationItem extends Item {
             if (!list.isEmpty()) {
                 ((ServerPlayer) pPlayer).connection.send(new ClientboundSetTitleTextPacket(Component.literal("There are hunters nearby").withStyle(ChatFormatting.RED)));
                 for (Player player : list) {
-                    player.addEffect(new MobEffectInstance(EffectInit.LOCK_ON.get(), -1, 0, false, false, false));
+                    MobEffectInstance instance = new MobEffectInstance(EffectInit.LOCK_ON.get(), -1, 0, false, false, false);
+                    player.addEffect(instance);
+                    ((ServerLevel) pLevel).getChunkSource().broadcast(player, new ClientboundUpdateMobEffectPacket(player.getId(), instance));
                 }
             }
             else {

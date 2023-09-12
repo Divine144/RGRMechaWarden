@@ -4,11 +4,14 @@ import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.entity.LaserEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
 import com.divinity.hmedia.rgrmechawarden.init.MorphInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import dev._100media.hundredmediaabilities.ability.Ability;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import dev._100media.hundredmediamorphs.morph.Morph;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,21 +22,19 @@ public class ShootLaserTurretAbility extends Ability {
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
         if (holder != null) {
             if (holder.isMechaMorphed()) {
-                if (tick % 20 == 0) {
-                    var pair = this.getDamageOutputPair(MorphHolderAttacher.getCurrentMorphUnwrap(player));
-                    for (int i = 0; i < pair.getRight(); i++) {
-                        LaserEntity entity = new LaserEntity(EntityInit.LASER.get(), level, pair.getLeft());
-                        entity.setPos(player.getX(), player.getEyeY() - 0.15, player.getZ());
-                        entity.setOwner(player);
-                        entity.setNoGravity(true);
-                        entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
-                        entity.setYRot(-Mth.wrapDegrees(player.getYRot()));
-                        entity.setXRot(-Mth.wrapDegrees(player.getXRot()));
-                        entity.xRotO = -Mth.wrapDegrees(player.xRotO);
-                        entity.yRotO = -Mth.wrapDegrees(player.yRotO);
-                        player.level().addFreshEntity(entity);
-                        /*  player.level().playSound(null, player.blockPosition(), SoundInit.ACID_SPRAY.get(), SoundSource.PLAYERS, 0.3f, 1f);*/
-                    }
+                var pair = this.getDamageOutputPair(MorphHolderAttacher.getCurrentMorphUnwrap(player));
+                if (tick % (20 / pair.getRight()) == 0) {
+                    LaserEntity entity = new LaserEntity(EntityInit.LASER.get(), level, pair.getLeft());
+                    entity.setPos(player.getX(), player.getEyeY() - 0.15, player.getZ());
+                    entity.setOwner(player);
+                    entity.setNoGravity(true);
+                    entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
+                    entity.setYRot(-Mth.wrapDegrees(player.getYRot()));
+                    entity.setXRot(-Mth.wrapDegrees(player.getXRot()));
+                    entity.xRotO = -Mth.wrapDegrees(player.xRotO);
+                    entity.yRotO = -Mth.wrapDegrees(player.yRotO);
+                    player.level().addFreshEntity(entity);
+                    player.serverLevel().playSound(null, player.blockPosition(), SoundInit.LASER.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
                 }
             }
         }

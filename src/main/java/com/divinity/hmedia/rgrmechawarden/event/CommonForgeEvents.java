@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -119,18 +120,6 @@ public class CommonForgeEvents {
     }
 
     @SubscribeEvent
-    public static void projectileHit(ProjectileImpactEvent event) {
-        if (event.getEntity().level().isClientSide) {
-            return;
-        }
-        if (event.getRayTraceResult() instanceof EntityHitResult eRes && event.getProjectile() instanceof AbstractArrow arrow && arrow.getOwner() instanceof ServerPlayer player && eRes.getEntity() instanceof Bat bat && bat.isDeadOrDying()) {
-            if (MorphHolderAttacher.getCurrentMorph(player).isPresent()) {
-                MechaWardenUtils.addToGenericQuestGoal(player, KillBatBowGoal.class);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayer player) {
             if (event.getState().getBlock() instanceof SpawnerBlock) {
@@ -157,7 +146,23 @@ public class CommonForgeEvents {
 
     @SubscribeEvent
     public static void onKill(LivingDeathEvent event) {
-
+        if (event.getSource().getEntity() instanceof ServerPlayer player) {
+            if (event.getEntity() instanceof ServerPlayer && event.getSource().is(DamageTypes.PLAYER_EXPLOSION)) {
+                MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersWristRocketsGoal.class);
+            }
+        }
+        if (event.getSource().getDirectEntity() instanceof AbstractArrow arrow && arrow.getOwner() instanceof ServerPlayer player) {
+            if (event.getEntity() instanceof Bat) {
+                if (MorphHolderAttacher.getCurrentMorph(player).isPresent()) {
+                    MechaWardenUtils.addToGenericQuestGoal(player, KillBatBowGoal.class);
+                }
+            }
+        }
+        if (event.getSource().is(DamageTypes.INDIRECT_MAGIC) && event.getSource().getEntity() instanceof ServerPlayer player) {
+            if (MorphHolderAttacher.getCurrentMorph(player).isPresent()) {
+                MechaWardenUtils.addToGenericQuestGoal(player, KillPlayersLaserGoal.class);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -191,7 +196,7 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.player instanceof ServerPlayer player && event.phase == TickEvent.Phase.END) {
-            if (player.getFeetBlockState().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
+            if (player.getBlockStateOn().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
                 if (MorphHolderAttacher.getCurrentMorph(player).isEmpty()) {
                     if (!player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
                         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
@@ -219,7 +224,7 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void onCrit(CriticalHitEvent event) {
         if (event.getTarget() instanceof ServerPlayer player) {
-            if (player.getFeetBlockState().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
+            if (player.getBlockStateOn().is(BlockInit.SPECIAL_SCULK_BLOCK.get())) {
                 event.setResult(Event.Result.ALLOW);
             }
         }

@@ -22,7 +22,6 @@ public class ReactorCoreEjectionAbility extends Ability {
 
     @Override
     public void executePressed(ServerLevel level, ServerPlayer player) {
-        super.executePressed(level, player);
         SkulkHolderAttacher.getSkulkHolder(player).ifPresent(cap -> {
             BlockHitResult result = MechaWardenUtils.blockTrace(player, ClipContext.Fluid.NONE, 30, false);
             if (result != null && !level.getBlockState(result.getBlockPos()).isAir()) {
@@ -34,6 +33,7 @@ public class ReactorCoreEjectionAbility extends Ability {
                     this.shootFromRotation(nuke, player, -90, player.getYRot(), 0.0F, 3F, 0F);
                     level.addFreshEntity(nuke);
                     level.playSound(null, player.blockPosition(), SoundInit.FUSION_REACTOR.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
+                    super.executePressed(level, player);
                 }
             }
             else player.sendSystemMessage(Component.literal("Invalid Target Position!").withStyle(ChatFormatting.RED), true);
