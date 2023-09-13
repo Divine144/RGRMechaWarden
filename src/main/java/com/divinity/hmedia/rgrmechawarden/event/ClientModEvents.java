@@ -152,6 +152,7 @@ public class ClientModEvents {
             var renderer = new GeoPlayerRenderer<>(context, new SimpleGeoPlayerModel<>(RGRMechaWarden.MODID, name) {
                 private static final ResourceLocation TURRET_MODEL = new ResourceLocation(RGRMechaWarden.MODID, "geo/entity/turret.geo.json");
                 private static final ResourceLocation TURRET_TEXTURE = new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/turret.png");
+                private final ResourceLocation defaultLocation = new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/" + name + ".png");
                 @Override
                 public ResourceLocation getTextureResource(T animatable1, @Nullable AbstractClientPlayer player) {
                     if (player != null) {
@@ -160,7 +161,7 @@ public class ClientModEvents {
                             return TURRET_TEXTURE;
                         }
                     }
-                    return new ResourceLocation(RGRMechaWarden.MODID, "textures/entity/" + name + ".png");
+                    return defaultLocation;
                 }
 
                 @Override

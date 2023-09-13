@@ -86,6 +86,4 @@ public class ItemSkillRequirementSpecial implements SkillRequirement {
         }
         return found;
     }
-
-
 }
