@@ -3,11 +3,13 @@ package com.divinity.hmedia.rgrmechawarden.item;
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.entity.EmpOrbEntity;
 import com.divinity.hmedia.rgrmechawarden.init.EntityInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +45,7 @@ public class DisruptorRayItem extends Item implements GeoItem {
         entity.setPos(pPlayer.getX(), pPlayer.getEyeY() - 0.1D, pPlayer.getZ());
         entity.setOwner(pPlayer);
         entity.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0, 1.5F, 0);
+        pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.RAY.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
         pLevel.addFreshEntity(entity);
       /*  pLevel.playSound(null, pPlayer.blockPosition(), SoundInit.ACID_SPRAY.get(), SoundSource.PLAYERS, 0.3f, 1f);*/
         return InteractionResultHolder.consume(itemStack);

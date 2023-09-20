@@ -3,11 +3,13 @@ package com.divinity.hmedia.rgrmechawarden.entity;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
 import com.divinity.hmedia.rgrmechawarden.init.AbilityInit;
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
+import com.divinity.hmedia.rgrmechawarden.init.SoundInit;
 import dev._100media.hundredmediaabilities.capability.AbilityHolderAttacher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -126,6 +128,7 @@ public class EmpOrbEntity extends Projectile implements GeoEntity {
                 SkulkHolderAttacher.getSkulkHolder(player).ifPresent(p -> p.setCoolDownsReduced(true));
             }
             target.hurt(this.level().damageSources().indirectMagic(this, this.getOwner()), 1F);
+            this.level().playSound(null, this.blockPosition(), SoundInit.SHOCK_TRAP.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
             this.discard();
         }
     }

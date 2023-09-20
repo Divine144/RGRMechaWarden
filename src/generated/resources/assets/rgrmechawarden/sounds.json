@@ -29,6 +29,11 @@
       "rgrmechawarden:mecholocation"
     ]
   },
+  "ray": {
+    "sounds": [
+      "rgrmechawarden:ray"
+    ]
+  },
   "shock_trap": {
     "sounds": [
       "rgrmechawarden:shock_trap"
