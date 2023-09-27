@@ -22,6 +22,7 @@ public class MorphInit {
             .maxHealth(10)
             .dimensions(0.65f, 0.65f)
             .eyeHeight(0.5f)
+            .swingDuration(8)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
                     p.setSkulkCap(40);
@@ -35,7 +36,9 @@ public class MorphInit {
 
     public static final RegistryObject<Morph> MECHA_TEEN = MORPHS.register("mecha_teen", () -> new Morph(new Morph.Properties<>()
             .maxHealth(20)
+            .eyeHeight(3)
             .dimensions(1f, 1f)
+            .swingDuration(8)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
                     p.setSkulkCap(70);
@@ -52,6 +55,7 @@ public class MorphInit {
     public static final RegistryObject<Morph> MECHA_WARDEN = MORPHS.register("mecha_warden", () -> new Morph(new Morph.Properties<>()
             .maxHealth(40)
             .dimensions(1.5f, 3f)
+            .swingDuration(8)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
                     p.setSkulkCap(100);
@@ -80,6 +84,7 @@ public class MorphInit {
     public static final RegistryObject<Morph> MECHA_KING = MORPHS.register("mecha_king", () -> new Morph(new Morph.Properties<>()
             .maxHealth(60)
             .dimensions(1.5f, 3f)
+            .swingDuration(8)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
                     p.setSkulkCap(150);
@@ -108,6 +113,8 @@ public class MorphInit {
     public static final RegistryObject<Morph> MECHA_SCULK = MORPHS.register("mecha_sculk", () -> new Morph(new Morph.Properties<>()
             .maxHealth(100)
             .dimensions(2f, 4f)
+            .swingDuration(8)
+            .eyeHeight(6)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
                     p.setSkulkCap(200);

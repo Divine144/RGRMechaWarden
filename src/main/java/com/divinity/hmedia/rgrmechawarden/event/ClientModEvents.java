@@ -2,9 +2,12 @@ package com.divinity.hmedia.rgrmechawarden.event;
 
 import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.cap.SkulkHolderAttacher;
+import com.divinity.hmedia.rgrmechawarden.client.animatable.WardenAnimatable;
 import com.divinity.hmedia.rgrmechawarden.client.renderer.DirectMissileEntityRenderer;
 import com.divinity.hmedia.rgrmechawarden.client.renderer.MissileEntityRenderer;
+import com.divinity.hmedia.rgrmechawarden.entity.DeepDarkDestroyerEntity;
 import com.divinity.hmedia.rgrmechawarden.entity.DirectMissileEntity;
+import com.divinity.hmedia.rgrmechawarden.entity.LaserEntity;
 import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import com.divinity.hmedia.rgrmechawarden.init.*;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -52,6 +55,8 @@ import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
@@ -77,11 +82,28 @@ public class ClientModEvents {
         event.registerEntityRenderer(EntityInit.MISSILE.get(), MissileEntityRenderer::new);
         event.registerEntityRenderer(EntityInit.DIRECT_MISSILE.get(), DirectMissileEntityRenderer::new);
         event.registerEntityRenderer(EntityInit.NUKE.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "nuke")));
-
-        // TODO: Change these
-        event.registerEntityRenderer(EntityInit.LASER.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "missile")));
+        event.registerEntityRenderer(EntityInit.LASER.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "laser")) {
+            @Override
+            public void render(LaserEntity entity, float entityYaw, float partialTick, PoseStack pMatrixStack, MultiBufferSource bufferSource, int packedLight) {
+                pMatrixStack.pushPose();
+                pMatrixStack.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTick, -entity.yRotO, -entity.getYRot()) - 90.0F));
+                pMatrixStack.mulPose(Axis.ZN.rotationDegrees(Mth.lerp(partialTick, -entity.xRotO,-entity.getXRot())));
+                pMatrixStack.mulPose(Axis.YP.rotationDegrees(-90));
+                super.render(entity, entityYaw, partialTick, pMatrixStack, bufferSource, packedLight);
+                pMatrixStack.popPose();
+            }
+        });
         event.registerEntityRenderer(EntityInit.EMP_ORB.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "nuke")));
-        event.registerEntityRenderer(EntityInit.DEEP_DARK_DESTROYER.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "nuke")));
+        event.registerEntityRenderer(EntityInit.DEEP_DARK_DESTROYER.get(), ctx -> new GeoEntityRenderer<>(ctx, new SimpleGeoEntityModel<>(RGRMechaWarden.MODID, "deep_dark_destroyer")) {
+            @Override
+            public void render(DeepDarkDestroyerEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+                poseStack.pushPose();
+                float f = 1.0f + ((float) (entity.getGrowTicks() / 50) * 2);
+                poseStack.scale(f, f, f);
+                super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+                poseStack.popPose();
+            }
+        });
 
         event.registerBlockEntityRenderer(BlockInit.CHARGING_STATION_BLOCK_ENTITY.get(), ctx -> new GeoBlockRenderer<>(
                 new DefaultedBlockGeoModel<>(new ResourceLocation(RGRMechaWarden.MODID, "charging_station_be"))
@@ -92,12 +114,15 @@ public class ClientModEvents {
         event.registerBlockEntityRenderer(BlockInit.MECHA_MINES_BLOCK_ENTITY.get(), ctx -> new GeoBlockRenderer<>(
                 new DefaultedBlockGeoModel<>(new ResourceLocation(RGRMechaWarden.MODID, "sculky_mecha_mines_be"))
         ));
-        // TODO : Change these
-        createSimpleMorphRenderer(MorphInit.BABY_MECHA.get(), "nuke", new SimpleAnimatable(), 1.0f);
-        createSimpleMorphRenderer(MorphInit.MECHA_TEEN.get(), "nuke", new SimpleAnimatable(), 1.0f);
-        createSimpleMorphRenderer(MorphInit.MECHA_WARDEN.get(), "nuke", new SimpleAnimatable(), 1.0f);
-        createSimpleMorphRenderer(MorphInit.MECHA_KING.get(), "nuke", new SimpleAnimatable(), 1.0f);
-        createSimpleMorphRenderer(MorphInit.MECHA_SCULK.get(), "nuke", new SimpleAnimatable(), 1.0f);
+
+        createSimpleMorphRenderer(MorphInit.BABY_MECHA.get(), "baby_mecha", new WardenAnimatable()
+                .runAnim(RawAnimation.begin().thenLoop("walk"))
+                .hoverboardAnim(RawAnimation.begin().then("hoverboard spawn", Animation.LoopType.PLAY_ONCE).thenLoop("hoverboard on")), 0.5f);
+        createSimpleMorphRenderer(MorphInit.MECHA_TEEN.get(), "mecha_teen", new WardenAnimatable()
+                .hoverboardAnim(RawAnimation.begin().then("hoverboard on", Animation.LoopType.PLAY_ONCE).thenLoop("hoverboard")), 1.0f);
+        createSimpleMorphRenderer(MorphInit.MECHA_WARDEN.get(), "mecha_warden", new WardenAnimatable(), 1.0f);
+        createSimpleMorphRenderer(MorphInit.MECHA_KING.get(), "mecha_king", new WardenAnimatable(), 1.0f);
+        createSimpleMorphRenderer(MorphInit.MECHA_SCULK.get(), "mecha_sculk", new WardenAnimatable().sitAnim(RawAnimation.begin().thenLoop("crouch")), 3f);
     }
 
     @SubscribeEvent
@@ -189,6 +214,10 @@ public class ClientModEvents {
                             else {
                                 if (player.getVehicle() != null) {
                                     poseStack.translate(0, 0.10, 0);
+                                }
+
+                                if (holder.isMechaBoard()) {
+                                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
                                 }
                                 poseStack.scale(scale, scale, scale);
                                 super.render(player, animatable1, entityYaw, partialTick, poseStack, bufferSource, packedLight);

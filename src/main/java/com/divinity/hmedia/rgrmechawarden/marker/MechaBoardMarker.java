@@ -78,6 +78,7 @@ public class MechaBoardMarker extends FlightMarker {
                     player.getAbilities().setFlyingSpeed(flyingSpeed);
                 }
             }
+            else this.disableFlight(level, player);
         }
         else this.disableFlight(level, player);
     }
@@ -91,10 +92,8 @@ public class MechaBoardMarker extends FlightMarker {
     public void disableFlight(Level level, Player player) {
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
         if (player instanceof ServerPlayer serverPlayer) {
-            if (serverPlayer.getAbilities().flying) {
-                if (holder != null ) {
-                    holder.setMechaBoard(false);
-                }
+            if (holder != null ) {
+                holder.setMechaBoard(false);
             }
         }
         if (!player.isCreative() && !player.isSpectator()) {

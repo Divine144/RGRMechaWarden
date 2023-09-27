@@ -1,19 +1,22 @@
 package com.divinity.hmedia.rgrmechawarden.item;
 
+import com.divinity.hmedia.rgrmechawarden.RGRMechaWarden;
 import com.divinity.hmedia.rgrmechawarden.utils.MechaWardenUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -21,6 +24,8 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
@@ -108,13 +113,14 @@ public class MegaMagnetItem extends Item implements GeoItem {
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-/*        consumer.accept(new IClientItemExtensions() {
+        consumer.accept(new IClientItemExtensions() {
             private BlockEntityWithoutLevelRenderer renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new GeoItemRenderer<VenomousStingItem>(new DefaultedItemGeoModel<>(new ResourceLocation(RGRAnt.MODID, "venomous_sting"))) {
+                    this.renderer = new GeoItemRenderer<MegaMagnetItem>(new DefaultedItemGeoModel<>(new ResourceLocation(RGRMechaWarden.MODID, "mega_magnet"))) {
+
                         @Override
                         public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
                             poseStack.pushPose();
@@ -130,16 +136,15 @@ public class MegaMagnetItem extends Item implements GeoItem {
                         @Override
                         protected void renderInGui(ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
                             poseStack.pushPose();
-                            poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                            poseStack.scale(1.2f, 1.2f, 1.2f);
-                            poseStack.translate(0.05, -0.25, -0.1);
+                            poseStack.scale(1.5f, 1.5f, 1.5f);
+                            poseStack.translate(-0.17, -1.2, -0.1);
                             super.renderInGui(transformType, poseStack, bufferSource, packedLight, packedOverlay);
                             poseStack.popPose();
                         }
                     };
                 return this.renderer;
             }
-        });*/
+        });
     }
 
     @Override

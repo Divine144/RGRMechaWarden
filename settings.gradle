@@ -2,23 +2,16 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
-            name 'MinecraftForge'
-            url 'https://maven.minecraftforge.net/'
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/'
         }
         maven {
-            name 'ParchmentMC'
-            url 'https://maven.parchmentmc.org'
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
         }
         maven {
-            name '100Media'
-            url 'https://maven.100media.dev'
-        }
-    }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.toString() == 'org.spongepowered.mixin') {
-                useModule("org.spongepowered:mixingradle:${requested.version}")
-            }
+            name = '100Media'
+            url = 'https://maven.100media.dev'
         }
     }
 }
