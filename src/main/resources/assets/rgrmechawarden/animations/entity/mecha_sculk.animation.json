@@ -477,7 +477,7 @@
 		"attack": {
 			"animation_length": 0.33333,
 			"bones": {
-				"bone2": {
+				"bonefix": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -634,7 +634,7 @@
 				}
 			}
 		},
-		"hoverboard": {
+		"Hoverboard ": {
 			"loop": true,
 			"bones": {
 				"All": {

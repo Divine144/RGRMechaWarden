@@ -1710,13 +1710,13 @@
 					]
 				},
 				{
-					"name": "bone2",
+					"name": "bonefix",
 					"parent": "right_arm",
 					"pivot": [-6.14501, 17.98151, 0.79459]
 				},
 				{
 					"name": "finallarm2",
-					"parent": "bone2",
+					"parent": "bonefix",
 					"pivot": [-6.14501, 17.98151, 0.79459],
 					"cubes": [
 						{
