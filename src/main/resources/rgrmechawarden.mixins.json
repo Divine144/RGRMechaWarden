@@ -5,7 +5,8 @@
   "refmap": "${mod_id}.refmap.json",
   "mixins": [
     "EntityMixin",
-    "ExplosionMixin"
+    "ExplosionMixin",
+    "MorphRidingOffsetMixin"
   ],
   "client": [
     "MinecraftMixin"

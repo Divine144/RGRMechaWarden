@@ -213,9 +213,11 @@ public class ClientModEvents {
                             }
                             else {
                                 if (player.getVehicle() != null) {
-                                    poseStack.translate(0, 0.10, 0);
+                                    if (morph == MorphInit.BABY_MECHA.get()) {
+                                        poseStack.translate(0, 0.15, 0);
+                                    }
+                                    else poseStack.translate(0, 0.8, 0);
                                 }
-
                                 if (holder.isMechaBoard()) {
                                     poseStack.mulPose(Axis.YN.rotationDegrees(90));
                                 }
