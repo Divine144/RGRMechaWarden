@@ -36,8 +36,7 @@ public class MorphInit {
 
     public static final RegistryObject<Morph> MECHA_TEEN = MORPHS.register("mecha_teen", () -> new Morph(new Morph.Properties<>()
             .maxHealth(20)
-            .eyeHeight(3)
-            .dimensions(1f, 1f)
+            .dimensions(1.5f, 3f)
             .swingDuration(8)
             .morphedTo(entity -> {
                 SkulkHolderAttacher.getSkulkHolder(entity).ifPresent(p -> {
@@ -112,7 +111,7 @@ public class MorphInit {
     ));
     public static final RegistryObject<Morph> MECHA_SCULK = MORPHS.register("mecha_sculk", () -> new Morph(new Morph.Properties<>()
             .maxHealth(100)
-            .dimensions(2f, 4f)
+            .dimensions(2.5f, 6f)
             .swingDuration(8)
             .eyeHeight(6)
             .morphedTo(entity -> {
