@@ -125,8 +125,14 @@ public class MegaMagnetItem extends Item implements GeoItem {
                         public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
                             poseStack.pushPose();
                             switch (transformType) {
+                                case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> {
+                                    poseStack.translate(0.2, -0.95, -0.2);
+                                }
                                 case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> {
-                                    poseStack.translate(-0.07, -0.2, -0.3);
+                                    poseStack.translate(0, -0.75, 0.05);
+                                }
+                                case GROUND -> {
+                                    poseStack.translate(0, -1, 0);
                                 }
                             }
                             super.renderByItem(stack, transformType, poseStack, bufferSource, packedLight, packedOverlay);
