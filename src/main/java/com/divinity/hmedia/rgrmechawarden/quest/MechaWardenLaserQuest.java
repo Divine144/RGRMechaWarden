@@ -1,9 +1,11 @@
 package com.divinity.hmedia.rgrmechawarden.quest;
 
+import com.divinity.hmedia.rgrmechawarden.init.AbilityInit;
 import com.divinity.hmedia.rgrmechawarden.init.ItemInit;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.AquireAdvancementGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.KillBatBowGoal;
 import com.divinity.hmedia.rgrmechawarden.quest.goal.KillPlayersWristRocketsGoal;
+import com.divinity.hmedia.rgrmechawarden.quest.reward.AbilityQuestReward;
 import dev._100media.hundredmediamorphs.capability.MorphHolderAttacher;
 import dev._100media.hundredmediaquests.goal.KillSpecificTypeGoal;
 import dev._100media.hundredmediaquests.goal.QuestGoal;
@@ -41,7 +43,7 @@ public class MechaWardenLaserQuest extends Quest {
     @Override
     protected List<QuestReward> initializeRewards() {
         List<QuestReward> rewards = new ArrayList<>();
-        rewards.add(new ItemQuestReward(new ItemStack(ItemInit.MECHA_WARDEN_LASER.get())));
+        rewards.add(new AbilityQuestReward(AbilityInit.WARDEN_LASER));
         return rewards;
     }
 }

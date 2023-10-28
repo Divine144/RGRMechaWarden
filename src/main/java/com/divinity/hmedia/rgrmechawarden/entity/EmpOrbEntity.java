@@ -123,6 +123,7 @@ public class EmpOrbEntity extends Projectile implements GeoEntity {
                 AbilityHolderAttacher.getAbilityHolder(player).ifPresent(p -> {
                     p.addCooldown(AbilityInit.SCULKY_MECHA_MINES.get(), true);
                     p.addCooldown(AbilityInit.LASER_TURRET_MORPH.get(), true);
+                    p.addCooldown(AbilityInit.WARDEN_LASER.get(), true);
                 });
 
                 SkulkHolderAttacher.getSkulkHolder(player).ifPresent(p -> p.setCoolDownsReduced(true));

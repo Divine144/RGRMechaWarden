@@ -21,4 +21,7 @@ public class AbilityInit {
     public static final RegistryObject<Ability> FUSION_CORE_REACTOR = ABILITIES.register("fusion_core_reactor", ReactorCoreEjectionAbility::new);
 
     public static final RegistryObject<Ability> SCULKY_MECHA_MINES = ABILITIES.register("sculky_mecha_mines", MechaMinesAbility::new);
+
+    public static final RegistryObject<Ability> WARDEN_LASER = ABILITIES.register("warden_laser", MechaWardenLaserAbility::new);
+
 }

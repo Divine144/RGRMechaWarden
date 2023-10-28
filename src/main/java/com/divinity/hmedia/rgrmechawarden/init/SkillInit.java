@@ -73,7 +73,7 @@ public class SkillInit {
                         }
                         return false;
                     }, "Enchanted Diamond Item"),
-                    new ItemTagSkillRequirement(() -> ItemTags.DECORATED_POT_SHERDS, 3, Component.literal("Any Pot Shards"))
+                    new ItemTagSkillRequirement(() -> ItemTags.DECORATED_POT_SHERDS, 3, Component.literal("Any Pottery Sherds"))
             ),
             MorphInit.MECHA_WARDEN
     ));

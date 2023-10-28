@@ -30,15 +30,16 @@ public class TeslaCoilAbility extends Ability {
                     if (optional.isPresent()) {
                         LivingEntity entity = optional.get();
                         level.playSound(null, player.blockPosition(), SoundInit.TESLA_COIL.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
-                        entity.hurt(level.damageSources().playerAttack(player), 2);
+                        entity.hurt(level.damageSources().playerAttack(player), 4);
                         Vec3 origin = player.getEyePosition(1.0f);
                         Vec3 traceVector = entity.position().subtract(origin);
                         Vec3 direction = traceVector.normalize();
                         BlockPositionSource source = new BlockPositionSource(entity.blockPosition());
-                        for (float i = 0.1f; i < Mth.floor(traceVector.length()) + 15; ++i) {
+                        for (float i = 0f; i < Mth.floor(traceVector.length()) + 12; i += 0.2f) {
                             Vec3 particlePosition = origin.add(direction.scale(i));
-                            player.serverLevel().sendParticles(new VibrationParticleOption(source, 30), particlePosition.x, particlePosition.y, particlePosition.z, 10, 0, 0, 0, 0);
+                            player.serverLevel().sendParticles(new VibrationParticleOption(source, 20), particlePosition.x, particlePosition.y, particlePosition.z, 10, 0, 0, 0, 0);
                         }
+
                     }
                     holder.removeSkulk(5);
                 }
