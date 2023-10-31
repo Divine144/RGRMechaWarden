@@ -10,6 +10,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.phys.Vec3;
 
@@ -17,12 +19,21 @@ import java.util.Optional;
 
 public class TeslaCoilAbility extends Ability {
 
+
+     int tick = 0;
+
     @Override
     public void executeHeld(ServerLevel level, ServerPlayer player, int tick) {
         super.executeHeld(level, player, tick);
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
         if (holder != null) {
             if (holder.getSkulk() >= 5) {
+                this.tick++;
+                if (this.tick >= 20 * 20) {
+                    this.tick = 0;
+                    super.executePressed(level, player);
+                    return;
+                }
                 if (tick % 20 == 0) {
                     Optional<LivingEntity> optional = MechaWardenUtils
                                                       .getEntitiesInRange(player, LivingEntity.class, 20, 20, 20, p -> p != player)
@@ -46,6 +57,11 @@ public class TeslaCoilAbility extends Ability {
             }
             else super.executePressed(level, player);
         }
+    }
+
+    @Override
+    public int getCooldownDuration(Level level, Player player) {
+        return 20 * 20;
     }
 
     @Override

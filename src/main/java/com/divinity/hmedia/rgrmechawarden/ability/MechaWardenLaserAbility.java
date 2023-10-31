@@ -17,13 +17,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class MechaWardenLaserAbility extends Ability {
 
-
     @Override
-    public void executeTick(ServerLevel level, ServerPlayer player, int tick) {
+    public void executeHeld(ServerLevel level, ServerPlayer player, int tick) {
         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
         if (holder != null) {
             int cost = 12;
-            if (holder.getSkulk() >= cost) {
+            if (holder.getSkulk() >= cost || holder.isInfinite()) {
                 if (tick % 3 == 0) {
                     MechaWardenUtils.scanHitWithFollowup(player, 50, false, hitResult -> {
                         Vec3 origin = player.position().add(0.0D, 1.6F, 0.0D);
@@ -51,7 +50,7 @@ public class MechaWardenLaserAbility extends Ability {
                 this.addCooldown(level, player, CooldownType.PRESSED);
             }
         }
-        super.executeTick(level, player, tick);
+        super.executeHeld(level, player, tick);
     }
 
     @Override

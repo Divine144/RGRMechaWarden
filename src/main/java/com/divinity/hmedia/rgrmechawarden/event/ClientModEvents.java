@@ -6,16 +6,14 @@ import com.divinity.hmedia.rgrmechawarden.client.animatable.WardenAnimatable;
 import com.divinity.hmedia.rgrmechawarden.client.renderer.DirectMissileEntityRenderer;
 import com.divinity.hmedia.rgrmechawarden.client.renderer.MissileEntityRenderer;
 import com.divinity.hmedia.rgrmechawarden.entity.DeepDarkDestroyerEntity;
-import com.divinity.hmedia.rgrmechawarden.entity.DirectMissileEntity;
 import com.divinity.hmedia.rgrmechawarden.entity.LaserEntity;
-import com.divinity.hmedia.rgrmechawarden.entity.MissileEntity;
 import com.divinity.hmedia.rgrmechawarden.init.*;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import dev._100media.hundredmediageckolib.client.animatable.IHasGeoRenderer;
-import dev._100media.hundredmediageckolib.client.animatable.SimpleAnimatable;
 import dev._100media.hundredmediageckolib.client.model.SimpleGeoEntityModel;
 import dev._100media.hundredmediageckolib.client.model.SimpleGeoPlayerModel;
 import dev._100media.hundredmediageckolib.client.renderer.GeoPlayerRenderer;
@@ -35,12 +33,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -51,20 +49,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = RGRMechaWarden.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientModEvents {
@@ -203,7 +196,52 @@ public class ClientModEvents {
             }, animatable) {
 
                 @Override
+                protected void moveAndRotateMatrixToMatchBone(PoseStack stack, GeoBone bone) {
+                    stack.translate(bone.getPivotX() / 16, bone.getPivotY() / 16, bone.getPivotZ() / 16);
+                    float xRot = bone.getRotX() * (180 / (float) Math.PI);
+                    float yRot = bone.getRotY() * (180 / (float) Math.PI);
+                    float zRot = bone.getRotZ() * (180 / (float) Math.PI);
+                    stack.mulPose(Axis.XP.rotationDegrees(xRot));
+                    stack.mulPose(Axis.YP.rotationDegrees(yRot));
+                    stack.mulPose(Axis.ZP.rotationDegrees(zRot));
+                }
+
+                @Override
+                public void renderRecursively(PoseStack stack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+                    if (MorphHolderAttacher.getCurrentMorphUnwrap(getCurrentRenderingEntity()) == MorphInit.MECHA_KING.get()) {
+                        if ("bone12".equals(bone.getName())) {
+                            stack.pushPose();
+                            stack.translate(0.8, 0.5, 0);
+                            stack.mulPose(Axis.XP.rotationDegrees(90));
+                            stack.mulPose(Axis.ZN.rotationDegrees(180));
+                            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),
+                                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, stack, bufferSource,
+                                    packedLight);
+                            stack.popPose();
+                            buffer = bufferSource.getBuffer(currentRenderType);
+                        }
+                    }
+                    else if ("finallarm2".equals(bone.getName()) || "right_arm".equals(bone.getName())) {
+                        stack.pushPose();
+                        moveAndRotateMatrixToMatchBone(stack, bone);
+                        if ("right_arm".equals(bone.getName())) {
+                            stack.translate(0, -1.5, -0.30);
+                            stack.scale(1.25f, 1.25f, 1.25f);
+                        }
+                        stack.mulPose(Axis.XP.rotationDegrees(90));
+                        stack.mulPose(Axis.ZN.rotationDegrees(180));
+                        Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),
+                                ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, stack, bufferSource,
+                                packedLight);
+                        stack.popPose();
+                        buffer = bufferSource.getBuffer(currentRenderType);
+                    }
+                    super.renderRecursively(stack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+                }
+
+                @Override
                 public void render(AbstractClientPlayer player, T animatable1, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+                    setCurrentRenderingEntity(player);
                     if (!player.hasEffect(MobEffects.INVISIBILITY)) {
                         var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
                         if (holder != null) {
@@ -223,7 +261,10 @@ public class ClientModEvents {
                                     poseStack.mulPose(Axis.YN.rotationDegrees(90));
                                 }
                                 poseStack.scale(scale, scale, scale);
+                                RenderType renderType = getRenderType(animatable1, getTextureLocation(animatable1), bufferSource, partialTick);
+                                this.currentRenderType = renderType;
                                 super.render(player, animatable1, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+                                currentRenderType = null;
                             }
                             poseStack.popPose();
                         }

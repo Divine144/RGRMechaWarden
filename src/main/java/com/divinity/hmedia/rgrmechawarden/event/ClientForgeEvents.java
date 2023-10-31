@@ -22,6 +22,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
@@ -73,6 +75,16 @@ public class ClientForgeEvents {
                         else minecraft.getChatListener().handleSystemMessage(Component.literal("Press %s".formatted("Space!")).withStyle(ChatFormatting.RED), true);
                     }
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderNameTag(RenderNameTagEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            var holder = SkulkHolderAttacher.getSkulkHolderUnwrap(player);
+            if (holder != null && holder.isMechaMorphed()) {
+                event.setContent(Component.empty());
             }
         }
     }
