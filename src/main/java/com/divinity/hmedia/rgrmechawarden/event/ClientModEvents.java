@@ -211,7 +211,7 @@ public class ClientModEvents {
                     if (MorphHolderAttacher.getCurrentMorphUnwrap(getCurrentRenderingEntity()) == MorphInit.MECHA_KING.get()) {
                         if ("bone12".equals(bone.getName())) {
                             stack.pushPose();
-                            stack.translate(0.8, 0.5, 0);
+                            stack.translate(0.7, 0.5, 0);
                             stack.mulPose(Axis.XP.rotationDegrees(90));
                             stack.mulPose(Axis.ZN.rotationDegrees(180));
                             Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),
@@ -221,13 +221,40 @@ public class ClientModEvents {
                             buffer = bufferSource.getBuffer(currentRenderType);
                         }
                     }
-                    else if ("finallarm2".equals(bone.getName()) || "right_arm".equals(bone.getName())) {
+                    else if (MorphHolderAttacher.getCurrentMorphUnwrap(getCurrentRenderingEntity()) == MorphInit.MECHA_SCULK.get()) {
+                        if ("finallarm2".equals(bone.getName())) {
+                            stack.pushPose();
+                            moveAndRotateMatrixToMatchBone(stack, bone);
+                            stack.translate(0, -0.2, -0.1);
+                            stack.mulPose(Axis.XP.rotationDegrees(90));
+                            stack.mulPose(Axis.ZN.rotationDegrees(180));
+                            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),
+                                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, stack, bufferSource,
+                                    packedLight);
+                            stack.popPose();
+                            buffer = bufferSource.getBuffer(currentRenderType);
+                        }
+                    }
+                    else if (MorphHolderAttacher.getCurrentMorphUnwrap(getCurrentRenderingEntity()) == MorphInit.BABY_MECHA.get()) {
+                        if ("bone3".equals(bone.getName())) {
+                            stack.pushPose();
+                            moveAndRotateMatrixToMatchBone(stack, bone);
+                            stack.mulPose(Axis.XP.rotationDegrees(90));
+                            stack.mulPose(Axis.ZN.rotationDegrees(180));
+                            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),
+                                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, stack, bufferSource,
+                                    packedLight);
+                            stack.popPose();
+                            buffer = bufferSource.getBuffer(currentRenderType);
+                        }
+                    }
+                    else if ("right_arm".equals(bone.getName())) {
                         stack.pushPose();
                         moveAndRotateMatrixToMatchBone(stack, bone);
-                        if ("right_arm".equals(bone.getName())) {
-                            stack.translate(0, -1.5, -0.30);
-                            stack.scale(1.25f, 1.25f, 1.25f);
-                        }
+
+                        stack.translate(0, -1.5, -0.30);
+                        stack.scale(1.25f, 1.25f, 1.25f);
+
                         stack.mulPose(Axis.XP.rotationDegrees(90));
                         stack.mulPose(Axis.ZN.rotationDegrees(180));
                         Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(getCurrentRenderingEntity(), getCurrentRenderingEntity().getItemInHand(InteractionHand.MAIN_HAND),

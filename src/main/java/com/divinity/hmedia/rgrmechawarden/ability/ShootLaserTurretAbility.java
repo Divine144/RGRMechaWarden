@@ -41,11 +41,6 @@ public class ShootLaserTurretAbility extends Ability {
     }
 
     @Override
-    public boolean isHiddenAbility() {
-        return true;
-    }
-
-    @Override
     public boolean isHeldAbility() {
         return true;
     }
